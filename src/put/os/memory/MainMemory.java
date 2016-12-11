@@ -7,6 +7,6 @@ public class MainMemory {
     private char [] memory;
 
     public MainMemory() {
-        this.memory = new char[36];
+        this.memory = new char[80];
     }
 }

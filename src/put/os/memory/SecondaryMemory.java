@@ -8,12 +8,12 @@ import java.io.IOException;
 /**
  * Created by Damian on 09.12.2016.
  */
-public class SecoundaryMemory {
+public class SecondaryMemory {
     private char[] memory;
-   // private int availableMemoryPointer = 0;
+    // private int availableMemoryPointer = 0;
 
-    public SecoundaryMemory() {
-        this.memory = new char[1024];
+    public SecondaryMemory() {
+        this.memory = new char[800000];
     }
 
     /**
@@ -28,5 +28,7 @@ public class SecoundaryMemory {
         }
     }
 
-
+    public char ReadFromMemory(int index) {
+        return memory[index];
+    }
 }

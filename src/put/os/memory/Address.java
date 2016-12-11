@@ -31,4 +31,8 @@ public class Address {
     public int asSimpleInt () {
         return page * MemoryManagementUnit.pageSize+shift;
     }
+
+    public static Address intToAdress (int i) {
+        return new Address(i/4,i%4);
+    }
 }
