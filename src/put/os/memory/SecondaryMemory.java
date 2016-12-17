@@ -21,11 +21,12 @@ public class SecondaryMemory {
      *
      * @param data
      */
-    public void addToMemory(String data, int index) {
+    public int addToMemory(String data, int index) {
         for (char ch : data.toCharArray()) {
             memory[index] = ch;
             index++;
         }
+        return index;
     }
 
     public char ReadFromMemory(int index) {

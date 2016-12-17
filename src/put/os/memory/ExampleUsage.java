@@ -15,11 +15,14 @@ public class ExampleUsage {
         MemoryManagementUnit memoryManagementUnit = new MemoryManagementUnit(secondaryMemory);
 
         //Wpisanie programow do pamieci
-        Address firstFreeAddressAfterProgram1 = memoryManagementUnit.addToMemoryFromFile(".\\resources\\Program1",new Address(0,0));
-        Address firstFreeAddressAfterProgram2 = memoryManagementUnit.addToMemoryFromFile(".\\resources\\Program2",firstFreeAddressAfterProgram1);
+        memoryManagementUnit.addToMemoryFromFile(".\\resources\\Program1");
+        memoryManagementUnit.addToMemoryFromFile(".\\resources\\Program2");
 
-        //Odczytanie pierwszego znaku po programie pierwszym(czyli pierwszego prrogramu drugiego w tym przypadku)
-        memoryManagementUnit.readFromMemory(memoryManagementUnit.translateAdress(firstFreeAddressAfterProgram1)); // UWAGA! Parametr musi byc adresem fizycznym, stad uzycie translateAdress (w dokumentacjach metod szczegoly)
+        memoryManagementUnit.readFromMemory(memoryManagementUnit.translateAddress(new Address(3,2),1)); // UWAGA! Parametr musi byc adresem fizycznym, stad uzycie translateAdress (w dokumentacjach metod szczegoly)
+        memoryManagementUnit.readFromMemory(memoryManagementUnit.translateAddress(new Address(0,0),0));
+        memoryManagementUnit.readFromMemory(memoryManagementUnit.translateAddress(new Address(0,0),1));
+        memoryManagementUnit.readFromMemory(memoryManagementUnit.translateAddress(new Address(7,4),0));
+        memoryManagementUnit.readFromMemory(memoryManagementUnit.translateAddress(new Address(1,3),0));
         memoryManagementUnit.readFromMemory(3,1);
     }
 }
