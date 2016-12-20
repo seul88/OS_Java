@@ -1,19 +1,22 @@
 package virtual.device;
 
-public final class Processor {
-    public static int   A,
-                        B,
-                        C,
-                        D,
-                        E,
-                        F;
+/**
+ * Created by macie on 20.12.2016.
+ */
+public class Processor {
+    public int  A,
+                B,
+                C,
+                D,
+                E,
+                F;
 
-    private Processor() {
-        A = 0;
-        B = 0;
-        C = 0;
-        D = 0;
-        E = 0;
-        F = 0;
+    public Processor() {
+        this.A = 0;
+        this.B = 0;
+        this.C = 0;
+        this.D = 0;
+        this.E = 0;
+        this.F = 0;
     }
 }
