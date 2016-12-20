@@ -1,7 +1,6 @@
-package processes;
+package put.os.processes;
 
 public class Examples {
-
 
     public static void main(String[] args) {
 
@@ -13,13 +12,13 @@ public class Examples {
         manager.setRoot(p1);
 
         ProcessBlockController p2 = new ProcessBlockController(manager.getCounter(),"Proces 1");
-        manager.createFirstProcess(p2);
+        manager.addProcessToRoot(p2);
 
         ProcessBlockController p3 = new ProcessBlockController(manager.getCounter(),"Proces 2");
-        manager.createFirstProcess(p3);
+        manager.addProcessToRoot(p3);
 
         ProcessBlockController p4 = new ProcessBlockController(manager.getCounter(),"Proces 3");
-        manager.createFirstProcess(p4);
+        manager.addProcessToRoot(p4);
 
         ProcessBlockController p5 = new ProcessBlockController(manager.getCounter(),"Proces 4");
         manager.addProcess(p2,p5);
@@ -31,40 +30,49 @@ public class Examples {
         manager.addProcess(p2,p7);
 
         ProcessBlockController p8 = new ProcessBlockController(manager.getCounter(),"Proces 7");
-        manager.createFirstProcess(p8);
+        manager.addProcessToRoot(p8);
 
         ProcessBlockController p9 = new ProcessBlockController(manager.getCounter(),"Proces 8");
-        manager.createFirstProcess(p9);
+        manager.addProcessToRoot(p9);
 
         ProcessBlockController p10 = new ProcessBlockController(manager.getCounter(),"Proces 9");
-        manager.createFirstProcess(p10);
+        manager.addProcessToRoot(p10);
 
         ProcessBlockController p11 = new ProcessBlockController(manager.getCounter(),"Proces 10");
-        manager.createFirstProcess(p11);
+        manager.addProcessToRoot(p11);
 
         //	ProcessBlockController p12 = new ProcessBlockController(manager.getCounter(),"Proces 11");
 
         // krotsze wywolanie metod
 
-        manager.createFirstProcess("PROCES X");
+        manager.addProcessToRoot("PROCES X");
         manager.addProcess("PROCES Y", "PROCES X");
         manager.addProcess("PROCES Z", "PROCES X");
         manager.addProcess("PROCES A", "PROCES X");
         System.out.println(manager.findNode("PROCES X").getName()+" HEREEEE");
         System.out.println(manager.getChildrenNames("PROCES X"));
+        if(manager.find("PROCES X")) System.out.println("JUHU");
 
+        System.out.println(p1.getPPID());
+        System.out.println(p7.getPPID());
+
+        manager.removeChild(p1);
+        manager.removeChild(p8);
+        manager.removeChild(p7);
+        manager.removeChild(p6);
+        manager.removeChild(p5);
+        manager.removeChild(p4);
 
         System.out.println(manager.getCounter());
         System.out.println(manager.getRoot().getName());
         System.out.println(manager.getRoot().getChildren());
         System.out.println(manager.getRoot().getPID());
         System.out.println(manager.isEmpty());
-        System.out.println(manager.getNumberOfProcesses(p1));
-        System.out.println(manager.getNumberOfProcesses(p2));
+        System.out.println(manager.getNumberOfChildren(p1));
+        System.out.println(manager.getNumberOfChildren(p2));
         System.out.println(manager.getChildrenNames(p1));
         if(manager.find(p2, p8)) System.out.println("DA");
         p1.removeChild(p2);
         System.out.println(manager.getChildrenNames(p1));
-    }
-
+        }
 }
