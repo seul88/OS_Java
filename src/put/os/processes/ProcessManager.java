@@ -2,6 +2,7 @@ package put.os.processes;
 
 public class ProcessManager {
 
+
 	private int counter;
 	private ProcessBlockController root;
 
@@ -26,19 +27,24 @@ public class ProcessManager {
 		return this.counter;
 	}
 
+	public boolean removeChild(ProcessBlockController child) {
+		return child.removeChild(child);
+	}
+
+
 	public void setRoot(ProcessBlockController root) {
 		this.root = root;
 		this.counter++;
 	}
 
 
-
-	public int getNumberOfProcesses(ProcessBlockController node) {
+	public int getNumberOfChildren(ProcessBlockController node) {
 		int n = node.getChildren().size();
 		for (ProcessBlockController child : node.getChildren())
-			n += getNumberOfProcesses(child);
+			n += getNumberOfChildren(child);
 		return n;
 	}
+
 
 	public boolean find(ProcessBlockController node, ProcessBlockController keyNode) {
 		boolean result = false;
@@ -53,8 +59,6 @@ public class ProcessManager {
 
 		return result;
 	}
-
-
 
 
 
@@ -73,12 +77,22 @@ public class ProcessManager {
 	}
 
 
+
 	public ProcessBlockController findNode(String NAME){
 		// wyszukiwanie procesu po nazwie
 		for (ProcessBlockController child : root.getChildren())
 			if (child.getName() == NAME) return child;
 		return null;
 	}
+
+	public boolean find(String NAME){
+		// wyszukiwanie procesu po nazwie
+		for (ProcessBlockController child : root.getChildren())
+			if (child.getName() == NAME) return true;
+		return false;
+	}
+
+
 
 	// function adds process to the Tree
 	// it requires 2 parameters - root of the Tree [PCB] and value to add [PCB]
@@ -93,11 +107,9 @@ public class ProcessManager {
 	//  add process by name [String]
 
 	public void addProcess(String NAME, String root){
+		ProcessBlockController parent = findNode(root);
 		ProcessBlockController PCB = new ProcessBlockController(this.counter, NAME);
-
-
-		//this.root.
-		//root.addChild(PCB);
+		parent.addChild(PCB);
 		this.counter = counter+1;
 	}
 
@@ -105,15 +117,15 @@ public class ProcessManager {
 
 	// function enables to add root of Tree (root only!)
 
-	public void createFirstProcess(ProcessBlockController PCB){
-		root.addChild(PCB);
+	public void addProcessToRoot(ProcessBlockController PCB){
+		this.root.addChild(PCB);
 		this.counter = counter+1;
 	}
 
 
-	public void createFirstProcess(String NAME){
+	public void addProcessToRoot(String NAME){
 		ProcessBlockController PCB = new ProcessBlockController(this.counter, NAME);
-		root.addChild(PCB);
+		this.root.addChild(PCB);
 		this.counter = counter+1;
 	}
 

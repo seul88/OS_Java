@@ -16,14 +16,14 @@ public class ProcessBlockController {
 	//	STATE=3 proces GOTOWY, proces czeka na przydzial procesora.
 	//  STATE=4 proces ZAKONCZONY, po zakonczeniu wykonywania procesu.
 
-	int A;	// wartosci w rejestrach procesu
-	int B;
-	int C;
-	int D;
-	int E;
-	int F;
+	private int A;	// wartosci w rejestrach procesu
+	private int B;
+	private int C;
+	private int D;
+	private int E;
+	private int F;
 
-	private ProcessBlockController parent;			// rodzic procesu 
+	private ProcessBlockController parent;			// rodzic procesu
 	private List<ProcessBlockController> children;	// lista dzieci procesu
 
 
@@ -35,7 +35,7 @@ public class ProcessBlockController {
 
 		this.STATE = 0;
 
-		if(this.getParent() != null)this.PPID = this.getParent().getPID();
+		if (this.getParent() != null) this.PPID = this.getParent().getPID();
 		else this.PPID = 0;
 
 		this.A = 0;
@@ -49,6 +49,7 @@ public class ProcessBlockController {
 
 	public void addChild(ProcessBlockController child) {
 		child.setParent(this);
+		child.setPPID(this.getPID());
 		children.add(child);
 	}
 
@@ -56,6 +57,30 @@ public class ProcessBlockController {
 		List<ProcessBlockController> list = getChildren();
 		return list.remove(child);
 	}
+
+
+	public String getChildrenNames(){
+		String result="+ ";
+		List<ProcessBlockController> list= this.children;
+		for (ProcessBlockController pcb : list )
+
+			result += pcb.getName() +" + ";
+		return result;
+	}
+
+	public boolean equals(int PID){
+		if (PID == this.PID) return true;
+		return false;
+	}
+
+	public boolean equals(ProcessBlockController PCB){
+		if (PCB == this) return true;
+		return false;
+	}
+
+
+
+	// getters & setters
 
 	public int getPID(){
 		return this.PID;
@@ -82,22 +107,61 @@ public class ProcessBlockController {
 		return this.children;
 	}
 
-	public String getChildrenNames(){
-		String result="+ ";
-		List<ProcessBlockController> list= this.children;
-		for (ProcessBlockController pcb : list )
 
-			result += pcb.getName() +" + ";
-		return result;
+	public void setPPID(int PPID){
+		this.PPID = PPID;
 	}
 
-	public boolean equals(int PID){
-		if (PID == this.PID) return true;
-		return false;
+	public void setA(int A){
+		this.A = A;
 	}
 
-	public boolean equals(ProcessBlockController PCB){
-		if (PCB == this) return true;
-		return false;
+	public void setB(int B){
+		this.B = B;
 	}
+
+	public void setC(int C){
+		this.C = C;
+	}
+
+	public void setD(int D){
+		this.D = D;
+	}
+
+	public void setE(int E){
+		this.E = E;
+	}
+
+	public void setF(int F){
+		this.F = F;
+	}
+
+	public int getA(){
+		return this.A;
+	}
+
+	public int getB(){
+		return this.B;
+	}
+
+	public int getC(){
+		return this.C;
+	}
+
+	public int getD(){
+		return this.D;
+	}
+
+	public int getE(){
+		return this.E;
+	}
+
+	public int getF(){
+		return this.F;
+	}
+
+	public int getPPID(){
+		return this.PPID;
+	}
+
 }
