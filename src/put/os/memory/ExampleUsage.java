@@ -16,11 +16,10 @@ public class ExampleUsage {
         memoryManagementUnit.addToMemoryFromFile(".\\resources\\Program1");
         memoryManagementUnit.addToMemoryFromFile(".\\resources\\Program2");
 
-        memoryManagementUnit.readFromMemory(memoryManagementUnit.translateAddress(new Address(3,2),1)); // UWAGA! Parametr musi byc adresem fizycznym, stad uzycie translateAdress (w dokumentacjach metod szczegoly)
-        memoryManagementUnit.readFromMemory(memoryManagementUnit.translateAddress(new Address(0,0),0));
-        memoryManagementUnit.readFromMemory(memoryManagementUnit.translateAddress(new Address(0,0),1));
-        memoryManagementUnit.readFromMemory(memoryManagementUnit.translateAddress(new Address(7,4),0));
-        memoryManagementUnit.readFromMemory(memoryManagementUnit.translateAddress(new Address(1,3),0));
-        memoryManagementUnit.readFromMemory(3,1);
+        memoryManagementUnit.readFromMemory(new Address(3,2),1); // UWAGA! Parametr musi byc adresem fizycznym, stad uzycie translateAdress (w dokumentacjach metod szczegoly)
+        memoryManagementUnit.readFromMemory(new Address(0,0),0);
+        memoryManagementUnit.readFromMemory(new Address(0,0),1);
+        memoryManagementUnit.readFromMemory(new Address(7,4),0);
+        memoryManagementUnit.readFromMemory(new Address(1,3),0);
     }
 }
