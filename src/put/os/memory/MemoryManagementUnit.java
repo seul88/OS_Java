@@ -81,7 +81,7 @@ public class MemoryManagementUnit {
      * @param shift
      * @return
      */
-    public Address translateAddress (int page, int shift, int pageTablesPointer) {
+    private Address translateAddress (int page, int shift, int pageTablesPointer) {
         return new Address(pageTables[pageTablesPointer].pageTable[page][0],shift);
     }
 
@@ -90,7 +90,7 @@ public class MemoryManagementUnit {
      * @param logicalAddress
      * @return
      */
-    public Address translateAddress (Address logicalAddress,int pageTablesPointer) {
+    private Address translateAddress (Address logicalAddress,int pageTablesPointer) {
         return new Address(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][0],logicalAddress.getShift());
     }
 
@@ -100,8 +100,9 @@ public class MemoryManagementUnit {
      * @param shift
      * @return
      */
-    public char readFromMemory (int page, int shift) {
-       return secondaryMemory.memory[page*4+shift];
+    public char readFromMemory (int page, int shift, int pageTablesPointer) {
+        Address address = translateAddress(page,shift,pageTablesPointer);
+        return secondaryMemory.memory[address.getPage()*4+address.getShift()];
     }
 
     /**
@@ -109,8 +110,9 @@ public class MemoryManagementUnit {
      * @param physicalAddress
      * @return
      */
-    public char readFromMemory (Address physicalAddress) {
-        return secondaryMemory.memory[physicalAddress.getPage()*4+physicalAddress.getShift()];
+    public char readFromMemory (Address physicalAddress, int pageTablesPointer) {
+        Address address = translateAddress(physicalAddress, pageTablesPointer);
+        return secondaryMemory.memory[address.getPage()*4+address.getShift()];
     }
 
     private int addToMemory(String data, int index) {
