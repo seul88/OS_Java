@@ -1,6 +1,6 @@
-package src.put.os.tree;
+package processes;
 
-public class main {
+public class Examples {
 
 
     public static void main(String[] args) {
