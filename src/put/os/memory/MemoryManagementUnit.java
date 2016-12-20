@@ -1,5 +1,7 @@
 package put.os.memory;
 
+import virtual.device.SecondaryMemory;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -58,10 +60,10 @@ public class MemoryManagementUnit {
             size = allData.length();
             finalPage = (size)/pageSize;
 
-            for (int i = 0; i < finalPage; i++) {
+            for (int i = 0; i <= finalPage; i++) {
                 pageTables[pageTablesPointer].pageTable[i]= new int [] {((secondaryMemoryPointer+3-(secondaryMemoryPointer+3)%4))/pageSize+i,0};
             }
-            secondaryMemoryPointer = secondaryMemory.addToMemory(allData,secondaryMemoryPointer+3-(secondaryMemoryPointer+3)%4);
+            secondaryMemoryPointer = this.addToMemory(allData,secondaryMemoryPointer+3-(secondaryMemoryPointer+3)%4);
             pageTablesPointer++;
 
         } catch (FileNotFoundException e) {
@@ -99,7 +101,7 @@ public class MemoryManagementUnit {
      * @return
      */
     public char readFromMemory (int page, int shift) {
-       return secondaryMemory.ReadFromMemory(page*4+shift);
+       return secondaryMemory.memory[page*4+shift];
     }
 
     /**
@@ -108,7 +110,15 @@ public class MemoryManagementUnit {
      * @return
      */
     public char readFromMemory (Address physicalAddress) {
-        return secondaryMemory.ReadFromMemory(physicalAddress.getPage()*4+physicalAddress.getShift());
+        return secondaryMemory.memory[physicalAddress.getPage()*4+physicalAddress.getShift()];
+    }
+
+    private int addToMemory(String data, int index) {
+        for (char ch : data.toCharArray()) {
+            secondaryMemory.memory[index] = ch;
+            index++;
+        }
+        return index;
     }
 
 }

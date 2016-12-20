@@ -1,4 +1,4 @@
-package put.os.memory;
+package virtual.device;
 
 /**
  * Created by Damian on 09.12.2016.

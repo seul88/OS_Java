@@ -1,7 +1,5 @@
 package put.os.memory;
-import put.os.memory.Address;
-import put.os.memory.MemoryManagementUnit;
-import put.os.memory.SecondaryMemory;
+import virtual.device.SecondaryMemory;
 /**
  * Created by Damian on 11.12.2016.
  */
