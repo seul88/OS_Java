@@ -7,3 +7,6 @@
 - Remigiusz Wróblewski: Interpreter
 - Erwin Majewski: Zarzadzanie procesami w strukturze drzewiastej
 - Arek Kołodyński: Planowanie przydziału procesora metodą FCFS
+
+## Trello
+https://trello.com/b/NgyD2bZs
