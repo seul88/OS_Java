@@ -1,4 +1,4 @@
-package processes;
+package put.os.processes;
 
 public class Examples {
 

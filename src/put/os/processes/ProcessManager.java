@@ -1,6 +1,4 @@
-package processes;
-
-import java.util.ArrayList;
+package put.os.processes;
 
 public class ProcessManager {
 
