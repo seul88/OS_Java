@@ -1,5 +1,6 @@
 package put.os.memory;
 
+import virtual.device.MainMemory;
 import virtual.device.SecondaryMemory;
 
 import java.io.BufferedReader;
@@ -19,12 +20,15 @@ public class MemoryManagementUnit {
     public static final int pageSize = 4;
     private PageTable [] pageTables;
     private int pageTablesPointer =0;
+    private int mainMemoryPointer =0;
     private int secondaryMemoryPointer =-1;
     private SecondaryMemory secondaryMemory;
+    private MainMemory mainMemory;
 
-    public MemoryManagementUnit(SecondaryMemory secondaryMemory) {
+    public MemoryManagementUnit(SecondaryMemory secondaryMemory,MainMemory mainMemory) {
         pageTables =  new PageTable[10];
         this.secondaryMemory = secondaryMemory;
+        this.mainMemory = mainMemory;
     }
 
     private class PageTable {
@@ -61,7 +65,7 @@ public class MemoryManagementUnit {
             finalPage = (size)/pageSize;
 
             for (int i = 0; i <= finalPage; i++) {
-                pageTables[pageTablesPointer].pageTable[i]= new int [] {((secondaryMemoryPointer+3-(secondaryMemoryPointer+3)%4))/pageSize+i,0};
+                pageTables[pageTablesPointer].pageTable[i]= new int [] {((secondaryMemoryPointer+3-(secondaryMemoryPointer+3)%4))/pageSize+i,444};
             }
             secondaryMemoryPointer = this.addToMemory(allData,secondaryMemoryPointer+3-(secondaryMemoryPointer+3)%4);
             pageTablesPointer++;
@@ -82,6 +86,7 @@ public class MemoryManagementUnit {
      * @return
      */
     private Address translateAddress (int page, int shift, int pageTablesPointer) {
+
         return new Address(pageTables[pageTablesPointer].pageTable[page][0],shift);
     }
 
@@ -91,11 +96,20 @@ public class MemoryManagementUnit {
      * @return
      */
     private Address translateAddress (Address logicalAddress,int pageTablesPointer) {
+        try {
+            if (logicalAddress.getShift()>=pageSize) {
+                throw new Exception("Shift out of page size");
+            }
+            if(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][1]==444) {
+                this.handlePageError(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][0]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new Address(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][0],logicalAddress.getShift());
     }
 
     /**
-     * UWAGA! Parametrami sa pola adresu FIZYCZNEGO, aby przetlumaczyc logiczny uzyj {@link #translateAddress(Address, int)} s(Address)} lub {@link #translateAddress(int, int, int)}
      * @param page
      * @param shift
      * @return
@@ -106,7 +120,6 @@ public class MemoryManagementUnit {
     }
 
     /**
-     * UWAGA! Parametrem jest adres FIZYCZNY, aby przetlumaczyc logiczny uzyj {@link #translateAddress(int, int, int)} (Address)} lub {@link #translateAddress(Address, int)}
      * @param physicalAddress
      * @return
      */
@@ -121,6 +134,25 @@ public class MemoryManagementUnit {
             index++;
         }
         return index;
+    }
+
+    private void handlePageError (int secMemoryPointer) {
+        char [] pageData = new char[pageSize];
+        for (int i = 0; i <pageSize; i++) {
+            pageData[i]=secondaryMemory.memory[secMemoryPointer*4+i];
+        }
+        addToMainMemory(pageData);
+
+    }
+
+    private void addToMainMemory (char [] page){
+        if(mainMemoryPointer+4>=mainMemory.memory.length){
+            System.out.println("Not enough place in main memory");
+        }
+        for (int i = 0; i < pageSize; i++) {
+            mainMemory.memory[mainMemoryPointer+i]=page[i];
+        }
+        mainMemoryPointer+=pageSize;
     }
 
 }
