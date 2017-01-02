@@ -22,6 +22,11 @@ public class ExampleUsage {
         memoryManagementUnit.readFromMemory(new Address(0,0),0);
         memoryManagementUnit.readFromMemory(new Address(1,2),1);
         memoryManagementUnit.readFromMemory(new Address(1,1),0);
-        memoryManagementUnit.readFromMemory(new Address(1,2),0);
+        memoryManagementUnit.readFromMemory(new Address(0,2),0);
+        memoryManagementUnit.readFromMemory(new Address(0,0),0);
+        memoryManagementUnit.readFromMemory(new Address(1,2),1);
+        memoryManagementUnit.readFromMemory(new Address(0,2),0);
+
+
     }
 }

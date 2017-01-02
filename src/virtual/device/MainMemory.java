@@ -6,5 +6,5 @@ package virtual.device;
 public class MainMemory {
     public char [] memory;
 
-    public MainMemory() {this.memory = new char[80];}
+    public MainMemory() {this.memory = new char[8];}
 }

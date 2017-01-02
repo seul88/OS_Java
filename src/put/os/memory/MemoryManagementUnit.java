@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
 
 /*"There are two ways of constructing a software design:
  One way is to make it so simple that there are obviously no deficiencies,
@@ -24,11 +25,13 @@ public class MemoryManagementUnit {
     private int secondaryMemoryPointer =-1;
     private SecondaryMemory secondaryMemory;
     private MainMemory mainMemory;
+    private LinkedList LRUList;
 
     public MemoryManagementUnit(SecondaryMemory secondaryMemory,MainMemory mainMemory) {
         pageTables =  new PageTable[10];
         this.secondaryMemory = secondaryMemory;
         this.mainMemory = mainMemory;
+        this.LRUList = new LinkedList<Integer>();
     }
 
     private class PageTable {
@@ -85,10 +88,10 @@ public class MemoryManagementUnit {
      * @param shift
      * @return
      */
-    private Address translateAddress (int page, int shift, int pageTablesPointer) {
+   /* private Address translateAddress (int page, int shift, int pageTablesPointer) {
 
         return new Address(pageTables[pageTablesPointer].pageTable[page][0],shift);
-    }
+    }*/
 
     /**
      * Tłumaczy adres logiczny uzywany w procesorze na fizyczny
@@ -101,12 +104,13 @@ public class MemoryManagementUnit {
                 throw new Exception("Shift out of page size");
             }
             if(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][1]==444) {
-                this.handlePageError(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][0]);
+                int mainPointer = this.handlePageError(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][0]);
+                this.pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][1]=mainPointer;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new Address(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][0],logicalAddress.getShift());
+        return new Address(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][1],logicalAddress.getShift());
     }
 
     /**
@@ -114,10 +118,10 @@ public class MemoryManagementUnit {
      * @param shift
      * @return
      */
-    public char readFromMemory (int page, int shift, int pageTablesPointer) {
+    /*public char readFromMemory (int page, int shift, int pageTablesPointer) {
         Address address = translateAddress(page,shift,pageTablesPointer);
         return secondaryMemory.memory[address.getPage()*4+address.getShift()];
-    }
+    }*/
 
     /**
      * @param physicalAddress
@@ -125,7 +129,14 @@ public class MemoryManagementUnit {
      */
     public char readFromMemory (Address physicalAddress, int pageTablesPointer) {
         Address address = translateAddress(physicalAddress, pageTablesPointer);
-        return secondaryMemory.memory[address.getPage()*4+address.getShift()];
+
+
+        if(LRUList.contains(address.getPage())){
+         LRUList.remove(new Integer (address.getPage()));
+        }
+        LRUList.push(address.getPage());
+
+        return mainMemory.memory[address.getPage()*4+address.getShift()];
     }
 
     private int addToMemory(String data, int index) {
@@ -136,23 +147,40 @@ public class MemoryManagementUnit {
         return index;
     }
 
-    private void handlePageError (int secMemoryPointer) {
+    private int handlePageError (int secMemoryPointer) {
         char [] pageData = new char[pageSize];
         for (int i = 0; i <pageSize; i++) {
             pageData[i]=secondaryMemory.memory[secMemoryPointer*4+i];
         }
-        addToMainMemory(pageData);
+       return addToMainMemory(pageData);
 
     }
 
-    private void addToMainMemory (char [] page){
-        if(mainMemoryPointer+4>=mainMemory.memory.length){
+    private int addToMainMemory(char[] page){
+        if(mainMemoryPointer+4>mainMemory.memory.length){
             System.out.println("Not enough place in main memory");
-        }
+            int pointer = (int) LRUList.pollLast();
+            for (int i = 0; i < pageSize; i++) {
+                mainMemory.memory[pointer*4+i]=page[i];
+            }
+            for (int i = 0; i <pageTablesPointer ; i++) {
+                for (int [] j : pageTables[i].pageTable
+                        ) {
+                    if (j[1]==pointer){
+                        j[1]=444;
+                    }
+                }
+            }
+
+            return pointer;
+        } else {
         for (int i = 0; i < pageSize; i++) {
             mainMemory.memory[mainMemoryPointer+i]=page[i];
         }
         mainMemoryPointer+=pageSize;
+            return mainMemoryPointer/4-1;
+        }
+
     }
 
 }
