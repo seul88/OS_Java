@@ -2,16 +2,16 @@ package put.os.fileSystem;
 
 public class INode 
 {
-	int indexInINodeTable;
-	int fileSize;
-	int blockCounter;
+	private int indexInINodeTable;
+	private int fileSize;
+	private int blockCounter;
 	//bloki bezpoœrednie
-	char value1 = ' ';
-	char value2 = ' ';
+	private byte value1;
+	private byte value2;
 	//blok poœredni 1 poziomu
 	int numberOfFirstLevelIndirectBlock;
 	
-	public INode(int _indexInINodeTable, char _value1, char _value2, int _fileSize, int _blockCounter, int _numberOfFirstLevelIndirectBlock)
+	public INode(int _indexInINodeTable, byte _value1, byte _value2, int _fileSize, int _blockCounter, int _numberOfFirstLevelIndirectBlock)
 	{
 		indexInINodeTable = _indexInINodeTable;
 		fileSize = _fileSize;
@@ -36,12 +36,12 @@ public class INode
 		return fileSize;
 	}
 	
-	public char GetValue1()
+	public byte GetValue1()
 	{
 		return value1;
 	}
 	
-	public char GetValue2()
+	public byte GetValue2()
 	{
 		return value2;
 	}

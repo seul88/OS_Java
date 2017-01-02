@@ -4,7 +4,7 @@ import java.util.*;
 
 public class HardDrive 	// reprezentacja przestrzeni dyskowej 
 {						
-	public static char[] drive;
+	public static byte[] drive;
 	public static int blockSize = 8;
 	public static int driveMaxBlockCount = 1;
 	public static boolean[] vector; // tablica reprezentuj¹ca wektor bitowy
@@ -14,18 +14,19 @@ public class HardDrive 	// reprezentacja przestrzeni dyskowej
 	public HardDrive(int _memorySize)
 	{
 		// tworzê tablicê reprezentuj¹c¹ dysk o wielkoœci podanej przez u¿ytkownika
-		drive = new char[_memorySize];
+		drive = new byte[_memorySize];
 		//dla ka¿dego elementu dysku wpisujemy pusty znak
 		for (int i = 0; i < drive.length; i++)
 		{									
-			drive[i]= ' ';
+			drive[i] = -1;
 		}
 		for (int i = 0; i < iNodeTable.length; i++)
 		{									
 			iNodeTable[i] = null;
 		}
-		vector = new boolean[_memorySize];
+
 		driveMaxBlockCount = _memorySize / blockSize;
+		vector = new boolean[driveMaxBlockCount];
 	}
 	
 	public int GetMaxBlockCount()
@@ -40,7 +41,7 @@ public class HardDrive 	// reprezentacja przestrzeni dyskowej
 		
 		for (CatalogPosition position : catalog)
 		{
-			if (position.GetFileName() == _fileName)
+			if (position.GetFileName().equals(_fileName))
 			{
 				result = true;
 				break;
@@ -91,7 +92,7 @@ public class HardDrive 	// reprezentacja przestrzeni dyskowej
 		return result;
 	}
 	
-	public AllocateMemory.memoryAllocateState CreateNewFile(String _fileName, char[] _fileContent)
+	public AllocateMemory.memoryAllocateState CreateNewFile(String _fileName, String _fileContent)
 	{
 		return AllocateMemory.AllocateMemoryForFile(_fileName, _fileContent);
 	}
@@ -99,5 +100,10 @@ public class HardDrive 	// reprezentacja przestrzeni dyskowej
 	public AllocateMemory.memoryAllocateState DeleteFileFromMemory(String _fileName)
 	{
 		return AllocateMemory.DeleteFileFromMemory(_fileName);
+	}
+	
+	public String PrintFileFromMemory(String _fileName)
+	{
+		return AllocateMemory.ReadFile(_fileName);
 	}
 }

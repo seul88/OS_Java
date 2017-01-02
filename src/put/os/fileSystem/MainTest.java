@@ -10,7 +10,7 @@ public class MainTest {
 		int memorySizeSetByUser = 0;
 		Scanner reader = new Scanner(System.in); 
 		System.out.println("Projekt zaliczeniowy systemy operacyjne");
-		System.out.println("Podaj wielkoœæ dysku (w znakach): \n");
+		System.out.println("Podaj wielkoœæ dysku (w bajtach): \n");
 		memorySizeSetByUser =  reader.nextInt();
 		
 		HardDrive drive = new HardDrive(memorySizeSetByUser);
@@ -25,23 +25,25 @@ public class MainTest {
 					+ "5: Usun plik\n"
 					+ "6: Wyswietl plik\n"
 					+ "0: koniec\n");
-			switch(reader.nextInt())
-			{
+			int operatorChoice = reader.nextInt();
+			reader.nextLine();
+			switch(operatorChoice)
+			{				
 				case 1:
 				{
 					int tempFreeBlocks = drive.GetFreeSpaceOnDriveInBlocks();
 					int tempBlockSize = drive.GetBlockSize();
-					System.out.println("Na dysku pozostalo :" 
-					+ tempFreeBlocks * tempBlockSize
-					+ "wolnego miejsca na ktere sk³ada sie :"
+					System.out.println("Na dysku pozostalo : " 
 					+ tempFreeBlocks
-					+ "blokow.");
+					+ " wolnego miejsca na ktore sk³ada sie : "
+					+ tempFreeBlocks / tempBlockSize
+					+ " blokow.");
 					break;
 				}
 				case 2:
 				{
 					System.out.println("Lista plikow : \n");
-					System.out.println(drive.GetFilesListInString());
+					System.out.println(drive.GetFilesListInString() + "\n");
 					break;
 				}
 				case 3:
@@ -51,6 +53,9 @@ public class MainTest {
 					System.out.println("Podan tresc pliku : \n");
 					String tempFileContent = reader.nextLine();
 					
+					AllocateMemory.memoryAllocateState result = drive.CreateNewFile(tempFileName, tempFileContent); 
+					
+					System.out.println(result.toString());
 					break;
 				}
 				case 4:
@@ -69,15 +74,34 @@ public class MainTest {
 						System.out.println("1 - Wyswietl plik");
 						System.out.println("2 - Wyswietl strukturê pliku");
 						System.out.println("Inny - Wyswietl plik");
-						System.out.println("0 - Anuluj");
-						switch(reader.nextInt())
+						System.out.println("0 - Anuluj\n");
+						int operatorChoiceCase6 = reader.nextInt();
+						reader.nextLine(); 
+						switch(operatorChoiceCase6)
 						{
 							case 1:
 							{
+								System.out.println("Podaj nazwe pliku : \n");
+								String tempFileName = reader.nextLine();
+								boolean tempResult = drive.CheckIfFileExists(tempFileName);
+								if (tempResult)
+								{
+									String tempFileContent = drive.PrintFileFromMemory(tempFileName);
+									if (tempFileContent != null)
+									{
+										System.out.println(tempFileContent + "\n");
+									}
+								}
+								else
+								{
+									System.out.println("Nie ma takiego pliku\n");
+								}
+								
 								break;
 							}
 							case 2:
 							{
+								System.out.println("Podaj nazwe pliku : \n");
 								break;
 							}
 							case 0:
