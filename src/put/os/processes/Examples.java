@@ -19,7 +19,9 @@ public class Examples {
 
         manager.setState(3, p3);
         System.out.println( manager.returnReadyProcess().getName());
-       if (p3.getSTATE() == 3) System.out.println("Proces dla Arka!");
+        System.out.println( manager.returnProcessStateAsString(p1) );
+        System.out.println( manager.returnProcessStateAsString(p3) );
+        if (p3.getSTATE() == 3) System.out.println("Proces dla Arka!");
         if (p2.getSTATE() == 3) System.out.println("Proces dla Arka!");
 
         ProcessBlockController p4 = new ProcessBlockController(manager.getCounter(),"Proces 3");
