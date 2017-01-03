@@ -12,6 +12,11 @@ public class ProcessManager {
 		this.counter = 0;
 	}
 
+	public ProcessManager(){
+		this.counter = 0;
+		this.root = null;
+	}
+
 
 	public boolean isEmpty() {
 		return root == null;
@@ -27,8 +32,8 @@ public class ProcessManager {
 		return this.counter;
 	}
 
-	public boolean removeChild(ProcessBlockController child) {
-		return child.removeChild(child);
+	public void removeChild(ProcessBlockController child) {
+		child.removeChild(child);
 	}
 
 
@@ -43,6 +48,16 @@ public class ProcessManager {
 		for (ProcessBlockController child : node.getChildren())
 			n += getNumberOfChildren(child);
 		return n;
+	}
+
+
+	public String returnProcessStateAsString(ProcessBlockController pcb){
+		if (pcb.getSTATE() == 0) return "Nowy";
+		if (pcb.getSTATE() == 1) return "Wykonywany";
+		if (pcb.getSTATE() == 2) return "Oczekujący";
+		if (pcb.getSTATE() == 3) return "Gotowy";
+		if (pcb.getSTATE() == 4) return "Zakonczony";
+		return "Error! Nieznany stan procesu!";
 	}
 
 
@@ -76,19 +91,29 @@ public class ProcessManager {
 		return null;
 	}
 
+	public void setState(int STATE, ProcessBlockController pcb ){
+		ProcessBlockController pc = findNode(this.root, pcb);
+		pc.setSTATE(STATE);
+	}
 
+
+	public ProcessBlockController returnReadyProcess(){
+		for (ProcessBlockController child : root.getChildren())
+			if (child.getSTATE() == 3) return child;
+		return null;
+	}
 
 	public ProcessBlockController findNode(String NAME){
 		// wyszukiwanie procesu po nazwie
 		for (ProcessBlockController child : root.getChildren())
-			if (child.getName() == NAME) return child;
+			if (child.getName().equals(NAME) ) return child;
 		return null;
 	}
 
 	public boolean find(String NAME){
 		// wyszukiwanie procesu po nazwie
 		for (ProcessBlockController child : root.getChildren())
-			if (child.getName() == NAME) return true;
+			if (child.getName().equals(NAME)) return true;
 		return false;
 	}
 
@@ -129,10 +154,6 @@ public class ProcessManager {
 		this.counter = counter+1;
 	}
 
-	public ProcessManager(){
-		this.counter = 0;
-		this.root = null;
-	}
 
 
 	public String getChildrenNames(ProcessBlockController PCB){
