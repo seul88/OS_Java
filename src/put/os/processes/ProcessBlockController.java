@@ -1,4 +1,5 @@
 package put.os.processes;
+import virtual.device.Processor;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -16,13 +17,6 @@ public class ProcessBlockController {
 	//	STATE=3 proces GOTOWY, proces czeka na przydzial procesora.
 	//  STATE=4 proces ZAKONCZONY, po zakonczeniu wykonywania procesu.
 
-	private int A;	// wartosci w rejestrach procesu
-	private int B;
-	private int C;
-	private int D;
-	private int E;
-	private int F;
-
 	private ProcessBlockController parent;			// rodzic procesu
 	private List<ProcessBlockController> children;	// lista dzieci procesu
 
@@ -38,12 +32,6 @@ public class ProcessBlockController {
 		if (this.getParent() != null) this.PPID = this.getParent().getPID();
 		else this.PPID = 0;
 
-		this.A = 0;
-		this.B = 0;
-		this.C = 0;
-		this.D = 0;
-		this.E = 0;
-		this.F = 0;
 	}
 
 
@@ -60,11 +48,12 @@ public class ProcessBlockController {
 
 
 	public String getChildrenNames(){
-		String result="+ ";
+		String result="";
 		List<ProcessBlockController> list= this.children;
-		for (ProcessBlockController pcb : list )
-
-			result += pcb.getName() +" + ";
+		for (ProcessBlockController pcb : list ) {
+			result += pcb.getName() + "\n";
+			result +=  pcb.getChildrenNames();
+		}
 		return result;
 	}
 
@@ -80,7 +69,61 @@ public class ProcessBlockController {
 
 
 
-	// getters & setters
+
+	// 				setters			//
+
+
+
+
+	public void setName(String name) {
+		this.NAME = name;
+	}
+
+
+	public void setParent(ProcessBlockController parent) {
+		this.parent = parent;
+	}
+
+
+
+	public void setPPID(int PPID){
+		this.PPID = PPID;
+	}
+
+	public void setA(int A){
+		Processor.A = A;
+	}
+
+	public void setB(int B){
+		Processor.B = B;
+	}
+
+	public void setC(int C){
+		Processor.C = C;
+	}
+
+	public void setD(int D){
+		Processor.D = D;
+	}
+
+	public void setE(int E){
+		Processor.E = E;
+	}
+
+	public void setF(int F){
+		Processor.F = F;
+	}
+
+	public void setSTATE(int STATE){
+		if (STATE >= 0 && STATE <= 4) this.STATE = STATE;
+	}
+
+
+	//		getters		//
+
+
+
+
 
 	public int getPID(){
 		return this.PID;
@@ -91,77 +134,50 @@ public class ProcessBlockController {
 		return this.NAME;
 	}
 
-	public void setName(String name) {
-		this.NAME = name;
-	}
 
 	public ProcessBlockController getParent() {
 		return this.parent;
 	}
 
-	public void setParent(ProcessBlockController parent) {
-		this.parent = parent;
-	}
 
 	public List<ProcessBlockController> getChildren() {
 		return this.children;
 	}
 
 
-	public void setPPID(int PPID){
-		this.PPID = PPID;
-	}
 
-	public void setA(int A){
-		this.A = A;
-	}
-
-	public void setB(int B){
-		this.B = B;
-	}
-
-	public void setC(int C){
-		this.C = C;
-	}
-
-	public void setD(int D){
-		this.D = D;
-	}
-
-	public void setE(int E){
-		this.E = E;
-	}
-
-	public void setF(int F){
-		this.F = F;
-	}
 
 	public int getA(){
-		return this.A;
+		return Processor.A;
 	}
 
 	public int getB(){
-		return this.B;
+		return Processor.B;
 	}
 
 	public int getC(){
-		return this.C;
+		return Processor.C;
 	}
 
 	public int getD(){
-		return this.D;
+		return Processor.D;
 	}
 
 	public int getE(){
-		return this.E;
+		return Processor.E;
 	}
 
 	public int getF(){
-		return this.F;
+		return Processor.F;
 	}
 
 	public int getPPID(){
 		return this.PPID;
 	}
 
+	public int getSTATE(){
+		return this.STATE;
+	}
+
 }
+
