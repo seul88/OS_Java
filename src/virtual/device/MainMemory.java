@@ -1,10 +1,8 @@
 package virtual.device;
 
-/**
- * Created by Damian on 09.12.2016.
- */
-public class MainMemory {
-    public char [] memory;
 
-    public MainMemory() {this.memory = new char[8];}
+public class MainMemory {
+    public static byte [] memory;
+
+    private MainMemory() {memory = new byte[8];}
 }
