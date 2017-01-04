@@ -2,11 +2,18 @@ package put.os.processes;
 
 public class ProcessManager {
 
+    /*
+        TODO VER1 (ERWIN)
+        Czy moglbys sprawic aby wszystkie funkcje tutaj zamiast argumentow o typie PCB przyjmowaly stringa z nazwa bloku PCB?
+     */
 
     private int counter;
     private ProcessBlockController root;
 
-
+    /*
+        TODO VER1 (ERWIN)
+        Ten konstruktor mozesz usunac jezeli nie wykorzystujesz go
+    */
     public ProcessManager(ProcessBlockController root) {
         this.root = root;
         this.counter = 0;
@@ -15,6 +22,13 @@ public class ProcessManager {
     public ProcessManager() {
         this.counter = 0;
         this.root = null;
+
+        /*
+            TODO VER1 (ERWIN)
+            Utworz tutaj blok PCB roota
+            bedzie tworzyla nowy blok PCB i dodawala go od razu do roota z tego obiektu
+            this.setRoot(new ProcessBlockController(this.getCounter(), pcbName);)
+        */
     }
 
 
@@ -37,6 +51,10 @@ public class ProcessManager {
     }
 
 
+    /*
+        TODO VER1 (ERWIN)
+        Moze zrob go prywatny, chyba ze nie mozna bo tego wymaga funkcjonalnosc
+    */
     public void setRoot(ProcessBlockController root) {
         this.root = root;
         this.counter++;
@@ -50,7 +68,10 @@ public class ProcessManager {
         return n;
     }
 
-
+    /*
+        TODO VER1 (ERWIN)
+        To mozna przeniesc do ProcessBlockController
+    */
     public String returnProcessStateAsString(ProcessBlockController pcb) {
         if (pcb.getSTATE() == 0) return "Nowy";
         if (pcb.getSTATE() == 1) return "Wykonywany";
@@ -61,6 +82,10 @@ public class ProcessManager {
     }
 
 
+    /*
+        TODO VER1 (ERWIN)
+        argument keyNode domyslnie root
+    */
     public boolean find(ProcessBlockController node, ProcessBlockController keyNode) {
         boolean result = false;
         if (node.equals(keyNode))
@@ -75,7 +100,10 @@ public class ProcessManager {
         return result;
     }
 
-
+    /*
+        TODO VER1 (ERWIN)
+        argument keyNode domyslnie root
+    */
     public ProcessBlockController findNode(ProcessBlockController node, ProcessBlockController keyNode) {
         if (node == null)
             return null;
@@ -90,6 +118,10 @@ public class ProcessManager {
         return null;
     }
 
+    /*
+        TODO VER1 (ERWIN)
+        Dodac funkcje
+    */
     public void setState(int STATE, ProcessBlockController pcb) {
         ProcessBlockController pc = findNode(this.root, pcb);
         pc.setSTATE(STATE);
@@ -128,6 +160,10 @@ public class ProcessManager {
 
     //  add process by name [String]
 
+    /*
+        TODO VER1 (ERWIN)
+        To chyba mozna wyrzucic.
+    */
     public void addProcess(String NAME, String root) {
         ProcessBlockController parent = findNode(root);
         ProcessBlockController PCB = new ProcessBlockController(this.counter, NAME);
@@ -138,12 +174,20 @@ public class ProcessManager {
 
     // function enables to add root of Tree (root only!)
 
+    /*
+        TODO VER1 (ERWIN)
+        To mozna wyrzucic i w funkcji addProcess(ProcessBlockController root, ProcessBlockController PCB)
+        dac jako pierwszy argument
+    */
     public void addProcessToRoot(ProcessBlockController PCB) {
         this.root.addChild(PCB);
         this.counter = counter + 1;
     }
 
-
+    /*
+        TODO VER1 (ERWIN)
+        Mozna wyrzucic i funkcjonalnosc tego przejmie createPCB(pcbName:string)
+    */
     public void addProcessToRoot(String NAME) {
         ProcessBlockController PCB = new ProcessBlockController(this.counter, NAME);
         this.root.addChild(PCB);
@@ -164,4 +208,12 @@ public class ProcessManager {
         return pcb.getChildrenNames();
 
     }
+
+
+    /*
+        TODO VER1 (ERWIN)
+        Utworz funkcje createPCB(pcbName:string)
+        bedzie tworzyla nowy blok PCB i dodawala go od razu do roota, albo jak sie poda drugi argument rodzica - to do niego
+        this.addProcessToRoot(new ProcessBlockController(this.getCounter(), pcbName);)
+     */
 }

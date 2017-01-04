@@ -71,43 +71,31 @@ public class ProcessBlockController {
 
     // 				setters			//
 
+    /*
+        TODO VER1 (ERWIN)
+        Chyba nie powinno moc sie zmieniac nazwy ani PID procesu.
+     */
 
     public void setName(String name) {
         this.NAME = name;
     }
 
-
+    /*
+        TODO VER1 (ERWIN)
+        Zmiana rodzica powinna rowniez usuwac >>ten<< proces z listy [children] dawnego rodzica
+    */
     public void setParent(ProcessBlockController parent) {
         this.parent = parent;
     }
 
 
+    /*
+        TODO VER1 (ERWIN)
+        To powinno byc prywatne i wywolywane przed setParent
+        A najlepiej pozbyc sie tej funkcji i wpisywać recznie ppid w tym obiekcie
+    */
     public void setPPID(int PPID) {
         this.PPID = PPID;
-    }
-
-    public void setA(int A) {
-        Processor.A = A;
-    }
-
-    public void setB(int B) {
-        Processor.B = B;
-    }
-
-    public void setC(int C) {
-        Processor.C = C;
-    }
-
-    public void setD(int D) {
-        Processor.D = D;
-    }
-
-    public void setE(int E) {
-        Processor.E = E;
-    }
-
-    public void setF(int F) {
-        Processor.F = F;
     }
 
     public void setSTATE(int STATE) {
@@ -120,6 +108,14 @@ public class ProcessBlockController {
 
     public int getPID() {
         return this.PID;
+    }
+
+    public int getPPID() {
+        return this.PPID;
+    }
+
+    public int getSTATE() {
+        return this.STATE;
     }
 
 
@@ -135,39 +131,6 @@ public class ProcessBlockController {
 
     public List<ProcessBlockController> getChildren() {
         return this.children;
-    }
-
-
-    public int getA() {
-        return Processor.A;
-    }
-
-    public int getB() {
-        return Processor.B;
-    }
-
-    public int getC() {
-        return Processor.C;
-    }
-
-    public int getD() {
-        return Processor.D;
-    }
-
-    public int getE() {
-        return Processor.E;
-    }
-
-    public int getF() {
-        return Processor.F;
-    }
-
-    public int getPPID() {
-        return this.PPID;
-    }
-
-    public int getSTATE() {
-        return this.STATE;
     }
 
 }
