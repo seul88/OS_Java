@@ -3,170 +3,165 @@ package put.os.processes;
 public class ProcessManager {
 
 
-	private int counter;
-	private ProcessBlockController root;
+    private int counter;
+    private ProcessBlockController root;
 
 
-	public ProcessManager(ProcessBlockController root) {
-		this.root = root;
-		this.counter = 0;
-	}
+    public ProcessManager(ProcessBlockController root) {
+        this.root = root;
+        this.counter = 0;
+    }
 
-	public ProcessManager(){
-		this.counter = 0;
-		this.root = null;
-	}
-
-
-	public boolean isEmpty() {
-		return root == null;
-	}
+    public ProcessManager() {
+        this.counter = 0;
+        this.root = null;
+    }
 
 
-	public ProcessBlockController getRoot() {
-		return root;
-	}
+    public boolean isEmpty() {
+        return root == null;
+    }
 
 
-	public int getCounter(){
-		return this.counter;
-	}
-
-	public void removeChild(ProcessBlockController child) {
-		child.removeChild(child);
-	}
+    public ProcessBlockController getRoot() {
+        return root;
+    }
 
 
-	public void setRoot(ProcessBlockController root) {
-		this.root = root;
-		this.counter++;
-	}
+    public int getCounter() {
+        return this.counter;
+    }
+
+    public void removeChild(ProcessBlockController child) {
+        child.removeChild(child);
+    }
 
 
-	public int getNumberOfChildren(ProcessBlockController node) {
-		int n = node.getChildren().size();
-		for (ProcessBlockController child : node.getChildren())
-			n += getNumberOfChildren(child);
-		return n;
-	}
+    public void setRoot(ProcessBlockController root) {
+        this.root = root;
+        this.counter++;
+    }
 
 
-	public String returnProcessStateAsString(ProcessBlockController pcb){
-		if (pcb.getSTATE() == 0) return "Nowy";
-		if (pcb.getSTATE() == 1) return "Wykonywany";
-		if (pcb.getSTATE() == 2) return "Oczekujący";
-		if (pcb.getSTATE() == 3) return "Gotowy";
-		if (pcb.getSTATE() == 4) return "Zakonczony";
-		return "Error! Nieznany stan procesu!";
-	}
+    public int getNumberOfChildren(ProcessBlockController node) {
+        int n = node.getChildren().size();
+        for (ProcessBlockController child : node.getChildren())
+            n += getNumberOfChildren(child);
+        return n;
+    }
 
 
-	public boolean find(ProcessBlockController node, ProcessBlockController keyNode) {
-		boolean result = false;
-		if (node.equals(keyNode))
-			return true;
-
-		else {
-			for (ProcessBlockController child : node.getChildren())
-				if (find(child, keyNode))
-					result = true;
-		}
-
-		return result;
-	}
+    public String returnProcessStateAsString(ProcessBlockController pcb) {
+        if (pcb.getSTATE() == 0) return "Nowy";
+        if (pcb.getSTATE() == 1) return "Wykonywany";
+        if (pcb.getSTATE() == 2) return "Oczekujący";
+        if (pcb.getSTATE() == 3) return "Gotowy";
+        if (pcb.getSTATE() == 4) return "Zakonczony";
+        return "Error! Nieznany stan procesu!";
+    }
 
 
+    public boolean find(ProcessBlockController node, ProcessBlockController keyNode) {
+        boolean result = false;
+        if (node.equals(keyNode))
+            return true;
 
-	public ProcessBlockController findNode(ProcessBlockController node, ProcessBlockController keyNode) {
-		if (node == null)
-			return null;
-		if (node.equals(keyNode))
-			return node;
-		else {
-			ProcessBlockController cnode = null;
-			for (ProcessBlockController child : node.getChildren())
-				if ((cnode = findNode(child, keyNode)) != null)
-					return cnode;
-		}
-		return null;
-	}
+        else {
+            for (ProcessBlockController child : node.getChildren())
+                if (find(child, keyNode))
+                    result = true;
+        }
 
-	public void setState(int STATE, ProcessBlockController pcb ){
-		ProcessBlockController pc = findNode(this.root, pcb);
-		pc.setSTATE(STATE);
-	}
+        return result;
+    }
 
 
-	public ProcessBlockController returnReadyProcess(){
-		for (ProcessBlockController child : root.getChildren())
-			if (child.getSTATE() == 3) return child;
-		return null;
-	}
+    public ProcessBlockController findNode(ProcessBlockController node, ProcessBlockController keyNode) {
+        if (node == null)
+            return null;
+        if (node.equals(keyNode))
+            return node;
+        else {
+            ProcessBlockController cnode = null;
+            for (ProcessBlockController child : node.getChildren())
+                if ((cnode = findNode(child, keyNode)) != null)
+                    return cnode;
+        }
+        return null;
+    }
 
-	public ProcessBlockController findNode(String NAME){
-		// wyszukiwanie procesu po nazwie
-		for (ProcessBlockController child : root.getChildren())
-			if (child.getName().equals(NAME) ) return child;
-		return null;
-	}
-
-	public boolean find(String NAME){
-		// wyszukiwanie procesu po nazwie
-		for (ProcessBlockController child : root.getChildren())
-			if (child.getName().equals(NAME)) return true;
-		return false;
-	}
-
+    public void setState(int STATE, ProcessBlockController pcb) {
+        ProcessBlockController pc = findNode(this.root, pcb);
+        pc.setSTATE(STATE);
+    }
 
 
-	// function adds process to the Tree
-	// it requires 2 parameters - root of the Tree [PCB] and value to add [PCB]
+    public ProcessBlockController returnReadyProcess() {
+        for (ProcessBlockController child : root.getChildren())
+            if (child.getSTATE() == 3) return child;
+        return null;
+    }
 
-	public void addProcess(ProcessBlockController root, ProcessBlockController PCB){
-		root.addChild(PCB);
-		this.counter = counter+1;
-	}
+    public ProcessBlockController findNode(String NAME) {
+        // wyszukiwanie procesu po nazwie
+        for (ProcessBlockController child : root.getChildren())
+            if (child.getName().equals(NAME)) return child;
+        return null;
+    }
 
-
-
-	//  add process by name [String]
-
-	public void addProcess(String NAME, String root){
-		ProcessBlockController parent = findNode(root);
-		ProcessBlockController PCB = new ProcessBlockController(this.counter, NAME);
-		parent.addChild(PCB);
-		this.counter = counter+1;
-	}
-
-
-
-	// function enables to add root of Tree (root only!)
-
-	public void addProcessToRoot(ProcessBlockController PCB){
-		this.root.addChild(PCB);
-		this.counter = counter+1;
-	}
+    public boolean find(String NAME) {
+        // wyszukiwanie procesu po nazwie
+        for (ProcessBlockController child : root.getChildren())
+            if (child.getName().equals(NAME)) return true;
+        return false;
+    }
 
 
-	public void addProcessToRoot(String NAME){
-		ProcessBlockController PCB = new ProcessBlockController(this.counter, NAME);
-		this.root.addChild(PCB);
-		this.counter = counter+1;
-	}
+    // function adds process to the Tree
+    // it requires 2 parameters - root of the Tree [PCB] and value to add [PCB]
+
+    public void addProcess(ProcessBlockController root, ProcessBlockController PCB) {
+        root.addChild(PCB);
+        this.counter = counter + 1;
+    }
 
 
+    //  add process by name [String]
 
-	public String getChildrenNames(ProcessBlockController PCB){
-		String result ="";
-		result = PCB.getChildrenNames();
-		return result;
-	}
+    public void addProcess(String NAME, String root) {
+        ProcessBlockController parent = findNode(root);
+        ProcessBlockController PCB = new ProcessBlockController(this.counter, NAME);
+        parent.addChild(PCB);
+        this.counter = counter + 1;
+    }
 
 
-	public String getChildrenNames(String PCB){
+    // function enables to add root of Tree (root only!)
 
-		ProcessBlockController pcb = this.findNode(PCB);
-		return pcb.getChildrenNames();
+    public void addProcessToRoot(ProcessBlockController PCB) {
+        this.root.addChild(PCB);
+        this.counter = counter + 1;
+    }
 
-	}
+
+    public void addProcessToRoot(String NAME) {
+        ProcessBlockController PCB = new ProcessBlockController(this.counter, NAME);
+        this.root.addChild(PCB);
+        this.counter = counter + 1;
+    }
+
+
+    public String getChildrenNames(ProcessBlockController PCB) {
+        String result = "";
+        result = PCB.getChildrenNames();
+        return result;
+    }
+
+
+    public String getChildrenNames(String PCB) {
+
+        ProcessBlockController pcb = this.findNode(PCB);
+        return pcb.getChildrenNames();
+
+    }
 }
