@@ -1,6 +1,6 @@
 package put.os.FCFS;
 
-import put.os.LinkedList;
+import java.util.LinkedList;
 
 public class FCFS {
 
