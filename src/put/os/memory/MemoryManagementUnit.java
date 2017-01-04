@@ -23,14 +23,10 @@ public class MemoryManagementUnit {
     private int pageTablesPointer =0;
     private int mainMemoryPointer =0;
     private int secondaryMemoryPointer =-1;
-    private SecondaryMemory secondaryMemory;
-    private MainMemory mainMemory;
     private LinkedList LRUList;
 
-    public MemoryManagementUnit(SecondaryMemory secondaryMemory,MainMemory mainMemory) {
+    public MemoryManagementUnit() {
         pageTables =  new PageTable[10];
-        this.secondaryMemory = secondaryMemory;
-        this.mainMemory = mainMemory;
         this.LRUList = new LinkedList<Integer>();
     }
 
@@ -51,7 +47,7 @@ public class MemoryManagementUnit {
      */
     public int addToMemoryFromFile(String path) {
         pageTables[pageTablesPointer] = new PageTable();
-        int size;
+        int size = 0;
         int finalPage;
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
@@ -78,7 +74,7 @@ public class MemoryManagementUnit {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return pageTablesPointer;
+        return size;
     }
 
     /**
@@ -127,7 +123,7 @@ public class MemoryManagementUnit {
      * @param physicalAddress
      * @return
      */
-    public char readFromMemory (Address physicalAddress, int pageTablesPointer) {
+    public byte readFromMemory (Address physicalAddress, int pageTablesPointer) {
         Address address = translateAddress(physicalAddress, pageTablesPointer);
 
 
@@ -136,32 +132,32 @@ public class MemoryManagementUnit {
         }
         LRUList.push(address.getPage());
 
-        return mainMemory.memory[address.getPage()*4+address.getShift()];
+        return MainMemory.memory[address.getPage()*4+address.getShift()];
     }
 
     private int addToMemory(String data, int index) {
         for (char ch : data.toCharArray()) {
-            secondaryMemory.memory[index] = ch;
+            SecondaryMemory.memory[index] = (byte)ch;
             index++;
         }
         return index;
     }
 
     private int handlePageError (int secMemoryPointer) {
-        char [] pageData = new char[pageSize];
+        byte[] pageData = new byte[pageSize];
         for (int i = 0; i <pageSize; i++) {
-            pageData[i]=secondaryMemory.memory[secMemoryPointer*4+i];
+            pageData[i]=SecondaryMemory.memory[secMemoryPointer*4+i];
         }
        return addToMainMemory(pageData);
 
     }
 
-    private int addToMainMemory(char[] page){
-        if(mainMemoryPointer+4>mainMemory.memory.length){
+    private int addToMainMemory(byte[] page){
+        if(mainMemoryPointer+4>MainMemory.memory.length){
             System.out.println("Not enough place in main memory");
             int pointer = (int) LRUList.pollLast();
             for (int i = 0; i < pageSize; i++) {
-                mainMemory.memory[pointer*4+i]=page[i];
+                MainMemory.memory[pointer*4+i]=page[i];
             }
             for (int i = 0; i <pageTablesPointer ; i++) {
                 for (int [] j : pageTables[i].pageTable
@@ -175,7 +171,7 @@ public class MemoryManagementUnit {
             return pointer;
         } else {
         for (int i = 0; i < pageSize; i++) {
-            mainMemory.memory[mainMemoryPointer+i]=page[i];
+            MainMemory.memory[mainMemoryPointer+i]=page[i];
         }
         mainMemoryPointer+=pageSize;
             return mainMemoryPointer/4-1;
