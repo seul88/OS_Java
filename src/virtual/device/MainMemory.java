@@ -2,7 +2,9 @@ package virtual.device;
 
 
 public final class MainMemory {
-    public static byte [] memory = new byte[8];
+
+    public static final int size = 8;
+    public static byte [] memory = new byte[size];
 
     private MainMemory() {}
 }

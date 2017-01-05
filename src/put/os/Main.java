@@ -1,7 +1,10 @@
 package put.os;
 
-import java.io.IOException;
+import put.os.fileSystem.Filesystem;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
 
 public class Main {
 
@@ -42,6 +45,8 @@ public class Main {
 
     }
 
+    private static Scanner reader = new Scanner(System.in);
+
     /*
        MODES
      */
@@ -78,12 +83,26 @@ public class Main {
 
     private static void mainMode() {
         System.out.println("[Main menu]");
+        System.out.print("1 - Filesystem \n");
 
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
+        int choose = reader.nextInt();
+
+        switch(choose) {
+            case 1:
+            {
+                mode = Mode.FILESYSTEM;
+                break;
+            }
         }
+
+    }
+
+    private static void filesystemMode() {
+        System.out.println("[Filesystem menu]");
+
+        Filesystem.run();
+
+        mode = Mode.MAIN;
     }
 
 
@@ -96,6 +115,9 @@ public class Main {
             {
                 case LOGO:
                     logoMode();
+                    break;
+                case FILESYSTEM:
+                    filesystemMode();
                     break;
                 case MAIN:
                     mainMode();
