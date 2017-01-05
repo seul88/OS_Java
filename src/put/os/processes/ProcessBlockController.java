@@ -21,6 +21,14 @@ public class ProcessBlockController {
     private ProcessBlockController parent;            // rodzic procesu
     private List<ProcessBlockController> children;    // lista dzieci procesu
 
+        /*
+        TODO VER1 (ERWIN)
+        W bloku PCB beda rejestry takie same jak w procesorze, ale beda uzywane jedynie przy wybudzaniu/uruchamianiu
+        procesu (wtedy do procesora beda kopiowane rejestry >>tego<< PCB) oraz przy zatrzymywaniu procesu
+        kiedy rejestry procesora zostana skopiowane tutaj.
+
+        Najlepiej utworzyc funkcje np. sleep/pause oraz revoke.
+     */
 
     public ProcessBlockController(int counter, String name) {
         this.PID = counter;
