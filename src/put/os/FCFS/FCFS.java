@@ -1,23 +1,23 @@
 package put.os.FCFS;
 
 import java.util.LinkedList;
+import put.os.processes.*;
 
 public class FCFS {
 
-	private LinkedList<Process> fcfsProcQueue;
-    private LinkedList<Process> finalProcList = new LinkedList<Process>();
+	private LinkedList<ProcessBlockController> fcfsProcQueue;
+    private LinkedList<ProcessBlockController> finalProcList = new LinkedList<ProcessBlockController>();
 
-    public FCFS(LinkedList<Process> procQueue) {
+    public FCFS(LinkedList<ProcessBlockController> procQueue) {
         this.fcfsProcQueue = procQueue;
     }
-
+    
     public void execute() {
-        Process x = fcfsProcQueue.peek();
+    	ProcessBlockController x = fcfsProcQueue.peek();
         int totaltime = x.getArrival();
 
-
         while(!fcfsProcQueue.isEmpty()){
-            Process runningProcess = fcfsProcQueue.peek();
+        	ProcessBlockController runningProcess = fcfsProcQueue.peek();
             int ioBurst = runningProcess.getNextBurst();
             int runTime = runningProcess.getRunTime();
             int cpuTime = runningProcess.getcpu();
@@ -29,14 +29,12 @@ public class FCFS {
                     runningProcess.incrementRunTime();
                     runTime = runningProcess.getRunTime();
 
-                    for(Process p: fcfsProcQueue){
+                    for(ProcessBlockController p: fcfsProcQueue){
                     if((p.getId()!= id) && (p.getArrival() <= totaltime))
                         p.incrementWait();
                     }
                     totaltime++;
-
                 }
-
                 if(runTime == cpuTime){
                     System.out.println("( P" + runningProcess.getId() + " ) - Finished, Removed");
                     finalProcList.add(runningProcess);
@@ -48,20 +46,18 @@ public class FCFS {
                     runningProcess.ioburstList.remove(0);
                     moveProcess(runningProcess,totaltime);
                 }
-
-    
         }
         System.out.println("finished");
    }
-
-   public LinkedList<Process> returnFinalProc() {
+    
+   public LinkedList<ProcessBlockController> returnFinalProc() {
        return finalProcList;
    }
-
-   public void moveProcess(Process p, int totaltime) {
+   
+   public void moveProcess(ProcessBlockController p, int totaltime) {
        boolean flag = false;
-                    for(int b = 1; b < fcfsProcQueue.size();b++) {
-                        Process c = fcfsProcQueue.get(b);
+                    for(int b = 1; b < fcfsProcQueue.size(); b++) {
+                    	ProcessBlockController c = fcfsProcQueue.get(b);
                         if(c.getWait() == 0){
                             fcfsProcQueue.add(b - 1, fcfsProcQueue.pop());
                             flag = true;
@@ -72,5 +68,4 @@ public class FCFS {
                         fcfsProcQueue.addLast(fcfsProcQueue.pop());
                     }
    }
-	
 }
