@@ -24,16 +24,14 @@ public class Main {
     // Actual mode
     private static Mode mode = Mode.LOGO;
 
-    // Is running
+    // Is r
+    // unning
     private static boolean run = true;
 
     // Available programs (position on hardDrive)
     private static Map<String, Integer> avaiablePrograms = new HashMap<String, Integer>();
 
     private static void initSystem() {
-        // TODO make static or singleton
-        MemoryManagementUnit memoryManagementUnit = new MemoryManagementUnit();
-
         // Check and load available programs
         File[] programs = new File(".\\resources\\").listFiles();
 
@@ -42,7 +40,7 @@ public class Main {
 
                 avaiablePrograms.put(
                         file.getName(),
-                        memoryManagementUnit.addToMemoryFromFile(file.toString())
+                        MemoryManagementUnit.addToMemoryFromFile(file.toString())
                 );
 
             }

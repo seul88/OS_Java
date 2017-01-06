@@ -8,34 +8,27 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Objects;
 
-/*"There are two ways of constructing a software design:
- One way is to make it so simple that there are obviously no deficiencies,
- and the other way is to make it so complicated that there are no obvious deficiencies. "
-~ Tony Hoare*/
 
 /**
  * Created by Damian on 09.12.2016.
  */
-public class MemoryManagementUnit {
+public class MemoryManagementUnit { //TODO: Zrobic static
     public static final int pageSize = 4;
-    private PageTable [] pageTables;
-    private int pageTablesPointer =0;
-    private int mainMemoryPointer =0;
-    private int secondaryMemoryPointer =-1;
-    private LinkedList LRUList;
+    private static PageTable [] pageTables =  new PageTable[10];
+    private static int pageTablesPointer =0;
+    private static int mainMemoryPointer =0;
+    private static int secondaryMemoryPointer =-1;
+    private static LinkedList LRUList = new LinkedList<Integer>();
+    private static int [] programSizes = new int[15];
 
-    public MemoryManagementUnit() {
-        pageTables =  new PageTable[10];
-        this.LRUList = new LinkedList<Integer>();
-    }
-
-    private class PageTable {
+    private static class PageTable {
         private int [][] pageTable;
         private int [] TranslationLookAsideBuffer;
 
         public PageTable() {
-            this.pageTable = new int[100000][2];
+            this.pageTable = new int[100][2];
         }
     }
 
@@ -45,7 +38,7 @@ public class MemoryManagementUnit {
      * @param path - sciezka do pliku
      * @return - numer tablicy stron do danego programu
      */
-    public int addToMemoryFromFile(String path) {
+    public static int addToMemoryFromFile(String path) {
         pageTables[pageTablesPointer] = new PageTable();
         int size = 0;
         int finalPage;
@@ -63,10 +56,14 @@ public class MemoryManagementUnit {
             size = allData.length();
             finalPage = (size)/pageSize;
 
+            programSizes[pageTablesPointer]=size;
+
             for (int i = 0; i <= finalPage; i++) {
-                pageTables[pageTablesPointer].pageTable[i]= new int [] {((secondaryMemoryPointer+3-(secondaryMemoryPointer+3)%4))/pageSize+i,444};
+                pageTables[pageTablesPointer].pageTable[i]=
+                        new int [] {((secondaryMemoryPointer+3-(secondaryMemoryPointer+3)%4))/pageSize+i,444};
             }
-            secondaryMemoryPointer = this.addToMemory(allData,secondaryMemoryPointer+3-(secondaryMemoryPointer+3)%4);
+            secondaryMemoryPointer =
+                    addToMemory(allData,secondaryMemoryPointer+3-(secondaryMemoryPointer+3)%4);
             pageTablesPointer++;
 
         } catch (FileNotFoundException e) {
@@ -74,56 +71,46 @@ public class MemoryManagementUnit {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return size;
+        return pageTablesPointer-1;
     }
 
-    /**
-     * Tłumaczy adres logiczny na fizyczny danej w parametrze tablicy stron
-     * @param pageTablesPointer
-     * @param page
-     * @param shift
-     * @return
-     */
-   /* private Address translateAddress (int page, int shift, int pageTablesPointer) {
+    public int sizeOfProgram(int nr){
+        return programSizes[nr];
+    }
 
-        return new Address(pageTables[pageTablesPointer].pageTable[page][0],shift);
-    }*/
 
     /**
      * Tłumaczy adres logiczny uzywany w procesorze na fizyczny
      * @param logicalAddress
      * @return
      */
-    private Address translateAddress (Address logicalAddress,int pageTablesPointer) {
+    private static Address translateAddress (Address logicalAddress,int pageTablesPointer) {
         try {
             if (logicalAddress.getShift()>=pageSize) {
                 throw new Exception("Shift out of page size");
             }
             if(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][1]==444) {
-                int mainPointer = this.handlePageError(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][0]);
-                this.pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][1]=mainPointer;
+                int mainPointer =
+                        handlePageError(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][0]);
+                pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][1]=mainPointer;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new Address(pageTables[pageTablesPointer].pageTable[logicalAddress.getPage()][1],logicalAddress.getShift());
+        return new Address(pageTables[pageTablesPointer].
+                pageTable[logicalAddress.getPage()][1],logicalAddress.getShift());
     }
 
-    /**
-     * @param page
-     * @param shift
-     * @return
-     */
-    /*public char readFromMemory (int page, int shift, int pageTablesPointer) {
-        Address address = translateAddress(page,shift,pageTablesPointer);
-        return secondaryMemory.memory[address.getPage()*4+address.getShift()];
-    }*/
+
+    public static byte readFromMemory (int characterPosition, int pageTablesPointer) {
+        return readFromMemory(new Address(characterPosition/pageSize,characterPosition%pageSize),pageTablesPointer);
+    }
 
     /**
      * @param physicalAddress
      * @return
      */
-    public byte readFromMemory (Address physicalAddress, int pageTablesPointer) {
+    public static byte readFromMemory (Address physicalAddress, int pageTablesPointer) {
         Address address = translateAddress(physicalAddress, pageTablesPointer);
 
 
@@ -135,7 +122,7 @@ public class MemoryManagementUnit {
         return MainMemory.memory[address.getPage()*4+address.getShift()];
     }
 
-    private int addToMemory(String data, int index) {
+    private static int addToMemory(String data, int index) {
         for (char ch : data.toCharArray()) {
             SecondaryMemory.memory[index] = (byte)ch;
             index++;
@@ -143,7 +130,7 @@ public class MemoryManagementUnit {
         return index;
     }
 
-    private int handlePageError (int secMemoryPointer) {
+    private static int handlePageError (int secMemoryPointer) {
         byte[] pageData = new byte[pageSize];
         for (int i = 0; i <pageSize; i++) {
             pageData[i]=SecondaryMemory.memory[secMemoryPointer*4+i];
@@ -152,9 +139,8 @@ public class MemoryManagementUnit {
 
     }
 
-    private int addToMainMemory(byte[] page){
+    private static int addToMainMemory(byte[] page){
         if(mainMemoryPointer+4>MainMemory.memory.length){
-            System.out.println("Not enough place in main memory");
             int pointer = (int) LRUList.pollLast();
             for (int i = 0; i < pageSize; i++) {
                 MainMemory.memory[pointer*4+i]=page[i];
@@ -179,4 +165,42 @@ public class MemoryManagementUnit {
 
     }
 
+    public static String printMemory (byte [] memory){
+        StringBuilder sb= new StringBuilder();
+        for (int i = 0; i < memory.length; i++) {
+            if(memory[i]!=0){
+                sb.append((char)memory[i]);
+            } else {
+                sb.append('*');
+            }
+
+            if(i%4==3){
+                sb.append('\n');
+            } else {
+                sb.append("\t");
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String printPageTables(){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < pageTablesPointer; i++) {
+            sb.append("Page Table "+i+":\n");
+            for (int j = 0; j <pageTables[i].pageTable.length ; j++) {
+                sb.append("["+j+"] \t"+pageTables[i].pageTable[j][0]+","+pageTables[i].pageTable[j][1]+"\n");
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String printLRUList (){
+        StringBuilder sb = new StringBuilder();
+        for (Object i: LRUList
+             ) {
+            sb.append(i);
+            sb.append('\n');
+        }
+        return sb.toString();
+    }
 }
