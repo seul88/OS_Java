@@ -1,5 +1,6 @@
 package put.os.processes;
 
+import put.os.memory.MemoryManagementUnit;
 import virtual.device.Processor;
 
 import java.util.List;
@@ -25,7 +26,6 @@ public class ProcessBlockController {
     private int sizeOfProgram;			// rozmiar programu, porównywany z pointerem
 
     private int A, B, C, D, E, F;   // wartości w rejestrach procesora
-
 
     private ProcessBlockController parent;            // rodzic procesu
     private List<ProcessBlockController> children;    // lista dzieci procesu
@@ -62,32 +62,62 @@ public class ProcessBlockController {
 
         if (this.getParent() != null) this.PPID = this.getParent().getPID();
         else this.PPID = 0;
-
     }
 
 
+    /**
+     * Adding Child
+     * @param child
+     */
     public void addChild(ProcessBlockController child) {
-        child.setParent(this);
-        child.PPID = this.getPID();
         children.add(child);
     }
 
+    /**
+     * Set parrent
+     * @param parent
+     */
+    public void setParent(ProcessBlockController parent) {
+        this.parent = parent;
+        this.PPID = parent.getPID();
+    }
+
+    /**
+     * Set program
+     * @param program
+     */
+    public void setProgram(Integer program) {
+        //this.numberOfProgram = program;
+        //this.sizeOfProgram = MemoryManagementUnit.getProgramSize();
+        this.pointer = 0;
+    }
+
+    /**
+     * Delete child
+     * @param child
+     * @return result of deleting
+     */
     public boolean removeChild(ProcessBlockController child) {
-        List<ProcessBlockController> list = getChildren();
-        return list.remove(child);
+        return this.children.remove(child);
     }
 
 
     public String getChildrenNames() {
         String result = "";
-        List<ProcessBlockController> list = this.children;
-        for (ProcessBlockController pcb : list) {
+
+        for (ProcessBlockController pcb : this.children) {
             result += pcb.getName() + "\n";
             result += pcb.getChildrenNames();
         }
+
         return result;
     }
 
+    /**
+     * Check pcb
+     * @param PID
+     * @return
+     */
     public boolean equals(int PID) {
         if (PID == this.PID) return true;
         return false;
@@ -98,32 +128,13 @@ public class ProcessBlockController {
         return false;
     }
 
-
-    // 				setters			//
-
-
-
-    /*
-        TODO VER1 (ERWIN)
-        Zmiana rodzica powinna rowniez usuwac >>ten<< proces z listy [children] dawnego rodzica
-
-        Tak chyba będzie OK ~Erwin
-    */
-    public void setParent(ProcessBlockController parent) {
-        removeChild(this.parent);
-        this.parent = parent;
+    public States getSTATE() {
+        return this.STATE;
     }
-
-
-
 
     public void setSTATE(States STATE) {
         this.STATE = STATE;
     }
-
-
-    //		getters		//
-
 
     public int getPID() {
         return this.PID;
@@ -133,25 +144,17 @@ public class ProcessBlockController {
         return this.PPID;
     }
 
-    public States getSTATE() {
-        return this.STATE;
-    }
-
-
     public String getName() {
         return this.NAME;
     }
-
 
     public ProcessBlockController getParent() {
         return this.parent;
     }
 
-
     public List<ProcessBlockController> getChildren() {
         return this.children;
     }
-
 
     /**
      * Return description of PCB
