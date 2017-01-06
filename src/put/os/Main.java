@@ -141,7 +141,9 @@ public class Main {
         System.out.print(
                 "1 - Create process \n" +
                 "2 - Run process \n" +
-                "3 - Show FCFS Queue \n"
+                "3 - Show FCFS Queue \n" +
+                "4 - Stop process \n" +
+                "5 - Show loaded processes \n"
         );
 
         int choose = reader.nextInt();
@@ -188,7 +190,7 @@ public class Main {
         }
     }
 
-    public static void interpreterMode() {
+    private static void interpreterMode() {
         System.out.println("[Process in progress!]");
         System.out.print(
             "1 - Next command \n" +
@@ -198,7 +200,7 @@ public class Main {
         );
 
         ProcessBlockController activeProcess = ProcessManager.getRunning();
-        Interpreter interpeter = new Interpreter(activeProcess);
+        Interpreter interpreter = new Interpreter(activeProcess);
 
         int choose = reader.nextInt();
 
@@ -207,13 +209,13 @@ public class Main {
             // Next command
             case 1:
             {
-                interpeter.nextLine();
+                interpreter.nextLine();
                 break;
             }
 
             // Run all
             case 2: {
-                interpeter.runAll();
+                interpreter.runAll();
 
                 break;
             }
