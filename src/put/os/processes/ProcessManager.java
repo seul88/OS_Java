@@ -1,5 +1,9 @@
 package put.os.processes;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class ProcessManager {
 
     private static int counter = 1;
@@ -20,18 +24,24 @@ public class ProcessManager {
         return counter;
     }
 
+
+
+    // NOWA FUNKCJA -> dzięki niej można usuwać proces, który ma dzieci
+    // dzieci są usynawiane przez roota
+    public void removeProcess(String name){
+        ProcessBlockController pcb = find(name);
+        if (!pcb.getChildren().equals(null))
+            for (ProcessBlockController child : pcb.getChildren())
+            root.addChild(child);
+        removeChild(pcb);
+    }
+
+
     public static void removeChild(ProcessBlockController child) {
         child.removeChild(child);
     }
 
-    /*
-        TODO VER1 (ERWIN)
-        To chyba nie jest poprawne
-    */
-    private static void setRoot(ProcessBlockController root) {
-        ProcessManager.root = root;
-        counter++;
-    }
+
 
     private static int getNumberOfChildren(ProcessBlockController node) {
         int n = node.getChildren().size();
@@ -84,16 +94,31 @@ public class ProcessManager {
     }
 
 
+/*      zmienione na wersję z listą gotowych procesów (niżej)
+
     public static ProcessBlockController returnReadyProcess() {
         for (ProcessBlockController child : root.getChildren())
             if (child.getSTATE() == ProcessBlockController.States.GOTOWY) return child;
 
         return null;
     }
-
+*/
     /**
      * WYSZUKIWANIE
      */
+
+    private ArrayList<ProcessBlockController> returnListOfReadyProcesses(String NAME) {
+        ArrayList<ProcessBlockController> lista = new ArrayList<ProcessBlockController>();
+
+        for (ProcessBlockController child : root.getChildren())
+            if (child.getSTATE().equals("GOTOWY")) lista.add(child);
+
+        return lista;
+    }
+
+
+
+
     private static ProcessBlockController find(String NAME) {
         // wyszukiwanie procesu po nazwie
         for (ProcessBlockController child : root.getChildren())
@@ -101,6 +126,7 @@ public class ProcessManager {
 
         return null;
     }
+
 
     private static ProcessBlockController find(ProcessBlockController keyNode) {
         return find(root, keyNode);

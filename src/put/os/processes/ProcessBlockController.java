@@ -10,15 +10,22 @@ public class ProcessBlockController {
     public enum States {
         NOWY,           // proces NOWY, po utworzeniu procesu.
         WYKONYWANY,     // proces WYKONYWANY, proces jest wykonywany.
-        OCZEKUJACY,     // proces OCZEKUJACY, proces czeka na przydzial zasobu innego niz procesor.
+        OCZEKUJACY,     // proces OCZEKUJACY, wykonywanie procesu zostało zatrzymane.
         GOTOWY,         // proces GOTOWY, proces czeka na przydzial procesora.
         ZAKONCZONY      // proces ZAKONCZONY, po zakonczeniu wykonywania procesu.
     }
 
-    private int PID;    // nr ID procesu
+    private int PID;     // nr ID procesu
     private String NAME; // nazwa procesu
     private int PPID;    // nr ID rodzica procesu
     private States STATE;
+
+    private int numberOfProgram;		// numer programu
+    private int pointer;				// wskaźnik na znak czytany z dysku
+    private int sizeOfProgram;			// rozmiar programu, porównywany z pointerem
+
+    private int A, B, C, D, E, F;   // wartości w rejestrach procesora
+
 
     private ProcessBlockController parent;            // rodzic procesu
     private List<ProcessBlockController> children;    // lista dzieci procesu
@@ -34,8 +41,15 @@ public class ProcessBlockController {
 
         /*
         TODO
-
         Do tego potrzebujemy przytrzymac inta z numerem page -> Memory management information (z wikipedii)
+
+
+        Dodałem te 3 pola do pracy z pamięcią:
+        private int numberOfProgram;		// numer programu
+        private int pointer;				// wskaźnik na znak czytany z dysku
+        private int sizeOfProgram;			// rozmiar programu, porównywany z pointerem
+
+        to wystarczy?
          */
 
     public ProcessBlockController(int counter, String name) {
@@ -54,7 +68,7 @@ public class ProcessBlockController {
 
     public void addChild(ProcessBlockController child) {
         child.setParent(this);
-        child.setPPID(this.getPID());
+        child.PPID = this.getPID();
         children.add(child);
     }
 
@@ -87,32 +101,21 @@ public class ProcessBlockController {
 
     // 				setters			//
 
-    /*
-        TODO VER1 (ERWIN)
-        Chyba nie powinno moc sie zmieniac nazwy ani PID procesu.
-     */
 
-    public void setName(String name) {
-        this.NAME = name;
-    }
 
     /*
         TODO VER1 (ERWIN)
         Zmiana rodzica powinna rowniez usuwac >>ten<< proces z listy [children] dawnego rodzica
+
+        Tak chyba będzie OK ~Erwin
     */
     public void setParent(ProcessBlockController parent) {
+        removeChild(this.parent);
         this.parent = parent;
     }
 
 
-    /*
-        TODO VER1 (ERWIN)
-        To powinno byc prywatne i wywolywane przed setParent
-        A najlepiej pozbyc sie tej funkcji i wpisywać recznie ppid w tym obiekcie
-    */
-    public void setPPID(int PPID) {
-        this.PPID = PPID;
-    }
+
 
     public void setSTATE(States STATE) {
         this.STATE = STATE;
