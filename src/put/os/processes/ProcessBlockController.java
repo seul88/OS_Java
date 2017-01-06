@@ -209,5 +209,34 @@ public class ProcessBlockController {
 
         return 'p'; // palceholder
     }
-}
 
+
+    /**
+     *  Function change state of Process for Waiting
+     *  and save values from Processor to ProcessBlockController
+     */
+    public void sleep(){
+        this.A = Processor.A;
+        this.B = Processor.B;
+        this.C = Processor.C;
+        this.D = Processor.D;
+        this.E = Processor.E;
+        this.F = Processor.F;
+        this.STATE = States.OCZEKUJACY;
+    }
+
+
+    /**
+     *  Function recovers last step of executed program
+     *  and change state for Ready
+     */
+    public void revoke(){
+        Processor.A = this.A;
+        Processor.B = this.B;
+        Processor.C = this.C;
+        Processor.D = this.D;
+        Processor.E = this.E;
+        Processor.F = this.F;
+        this.STATE = States.GOTOWY;
+    }
+}
