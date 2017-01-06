@@ -1,4 +1,4 @@
-package put.os.FCFS;
+/*package put.os.FCFS;
 
 import put.os.LinkedList;
 
@@ -74,3 +74,5 @@ public class FCFS {
    }
 	
 }
+
+*/

@@ -4,7 +4,7 @@ package virtual.device;
  * Created by macie on 20.12.2016.
  */
 public class Processor {
-    public int  A,
+    public static int  A,
                 B,
                 C,
                 D,
