@@ -13,4 +13,13 @@ public class Dispatcher {
     public static void addPCB(ProcessBlockController pcb) {
         Dispatcher.processesQueque.add(pcb);
     }
+
+    public static void deletePCB(ProcessBlockController pcb) {
+        Dispatcher.processesQueque.remove(pcb);
+    }
+
+    public static void pollHead () {
+        Dispatcher.processesQueque.pollFirst();
+    }
+
 }
