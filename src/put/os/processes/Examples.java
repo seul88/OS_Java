@@ -4,6 +4,7 @@ public class Examples {
 
     public static void main(String[] args) {
 
+        /*
         ProcessManager manager = new ProcessManager();
 
 
@@ -78,6 +79,7 @@ public class Examples {
         manager.removeChild(p5);
         manager.removeChild(p4);
 */
+/*
         System.out.println(manager.getCounter());
         System.out.println(manager.getRoot().getName());
 
@@ -91,7 +93,7 @@ public class Examples {
         p2.removeChild(p5);
         System.out.println(manager.getChildrenNames(p1));
         p1.removeChild(p2);     */
-        System.out.println(manager.getChildrenNames(p1));
+        //System.out.println(manager.getChildrenNames(p1));
 
 
         }

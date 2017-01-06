@@ -1,10 +1,13 @@
 package put.os;
 
 import put.os.fileSystem.Filesystem;
+import put.os.memory.MemoryManagementUnit;
+import put.os.processes.ProcessBlockController;
+import put.os.processes.ProcessManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -22,6 +25,29 @@ public class Main {
 
     // Is running
     private static boolean run = true;
+
+    // Available programs (position on hardDrive)
+    private static Map<String, Integer> avaiablePrograms = new HashMap<String, Integer>();
+
+    private static void initSystem() {
+        // TODO make static or singleton
+        MemoryManagementUnit memoryManagementUnit = new MemoryManagementUnit();
+
+        // Check and load available programs
+        File[] programs = new File(".\\resources\\").listFiles();
+
+        for (File file : programs) {
+            if (file.isFile()) {
+
+                avaiablePrograms.put(
+                        file.getName(),
+                        memoryManagementUnit.addToMemoryFromFile(file.toString())
+                );
+
+            }
+        }
+
+    }
 
     // Logo
     private static void displayLogo() {
@@ -83,16 +109,20 @@ public class Main {
 
     private static void mainMode() {
         System.out.println("[Main menu]");
-        System.out.print("1 - Filesystem \n");
+        System.out.print(
+                "1 - Filesystem \n" +
+                "2 - Process management \n"
+        );
 
         int choose = reader.nextInt();
 
         switch(choose) {
             case 1:
-            {
                 mode = Mode.FILESYSTEM;
                 break;
-            }
+            case 2:
+                mode = Mode.PROCESS;
+                break;
         }
 
     }
@@ -105,11 +135,60 @@ public class Main {
         mode = Mode.MAIN;
     }
 
+    private static void processMode() {
+        System.out.println("[Process menu]");
+        System.out.print(
+                "1 - Create process \n" +
+                "2 - Run process \n" +
+                "3 - Show FCFS Queue \n"
+        );
+
+        int choose = reader.nextInt();
+
+        switch(choose) {
+
+            // Create process
+            case 1:
+            {
+                // I. List all names of available programs
+                System.out.println("Available programs: ");
+                for(Map.Entry<String, Integer> program : avaiablePrograms.entrySet())
+                {
+                    System.out.println(program.getKey());
+                }
+
+                // II. Choose program
+                String chosenProgram = reader.next();
+
+                if(avaiablePrograms.containsKey(chosenProgram))
+                {
+                    ProcessManager.createProcess( chosenProgram /* Name */, avaiablePrograms.get(chosenProgram)/* memory */);
+                    System.out.println("PCB added!");
+                }
+
+                break;
+            }
+
+            // Run process
+            case 2: {
+
+                // Wywolaj funkcje z FCFS
+                // Wlacz i zwroc wlaczony PCB z kolejki
+
+                // Albo wywolaj funkcje w ProcessManager ktora wywola funkcje wlaczajaca PCB z kolejki
+                // a potem wpisze ja do RUNNING i zwroci tutaj
+
+                ProcessBlockController pcb = null;
+            }
+        }
+    }
 
     /*
         MAIN FUNCTION
      */
     public static void main(String[] args) {
+        initSystem();
+
         while(run) {
             switch(mode)
             {
@@ -121,6 +200,9 @@ public class Main {
                     break;
                 case MAIN:
                     mainMode();
+                    break;
+                case PROCESS:
+                    processMode();
                     break;
                 case EXIT:
                     clearScreen();

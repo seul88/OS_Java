@@ -7,16 +7,18 @@ import java.util.ArrayList;
 
 public class ProcessBlockController {
 
+    public enum States {
+        NOWY,           // proces NOWY, po utworzeniu procesu.
+        WYKONYWANY,     // proces WYKONYWANY, proces jest wykonywany.
+        OCZEKUJACY,     // proces OCZEKUJACY, proces czeka na przydzial zasobu innego niz procesor.
+        GOTOWY,         // proces GOTOWY, proces czeka na przydzial procesora.
+        ZAKONCZONY      // proces ZAKONCZONY, po zakonczeniu wykonywania procesu.
+    }
+
     private int PID;    // nr ID procesu
     private String NAME; // nazwa procesu
     private int PPID;    // nr ID rodzica procesu
-    private int STATE;
-
-    //  STATE=0 proces NOWY, po utworzeniu procesu.
-    //	STATE=1 proces WYKONYWANY, proces jest wykonywany.
-    //	STATE=2 proces OCZEKUJACY, proces czeka na przydzial zasobu innego niz procesor.
-    //	STATE=3 proces GOTOWY, proces czeka na przydzial procesora.
-    //  STATE=4 proces ZAKONCZONY, po zakonczeniu wykonywania procesu.
+    private States STATE;
 
     private ProcessBlockController parent;            // rodzic procesu
     private List<ProcessBlockController> children;    // lista dzieci procesu
@@ -30,13 +32,19 @@ public class ProcessBlockController {
         Najlepiej utworzyc funkcje np. sleep/pause oraz revoke.
      */
 
+        /*
+        TODO
+
+        Do tego potrzebujemy przytrzymac inta z numerem page -> Memory management information (z wikipedii)
+         */
+
     public ProcessBlockController(int counter, String name) {
         this.PID = counter;
         this.NAME = name;
 
         this.children = new ArrayList<ProcessBlockController>();
 
-        this.STATE = 0;
+        this.STATE = States.NOWY;
 
         if (this.getParent() != null) this.PPID = this.getParent().getPID();
         else this.PPID = 0;
@@ -106,8 +114,8 @@ public class ProcessBlockController {
         this.PPID = PPID;
     }
 
-    public void setSTATE(int STATE) {
-        if (STATE >= 0 && STATE <= 4) this.STATE = STATE;
+    public void setSTATE(States STATE) {
+        this.STATE = STATE;
     }
 
 
@@ -122,7 +130,7 @@ public class ProcessBlockController {
         return this.PPID;
     }
 
-    public int getSTATE() {
+    public States getSTATE() {
         return this.STATE;
     }
 
@@ -141,5 +149,21 @@ public class ProcessBlockController {
         return this.children;
     }
 
+    public String returnProcessStateAsString() {
+        switch(this.STATE) {
+            case NOWY:
+                return "Nowy";
+            case WYKONYWANY:
+                return "Wykonywany";
+            case OCZEKUJACY:
+                return "Oczekujący";
+            case GOTOWY:
+                return "Gotowy";
+            case ZAKONCZONY:
+                return "Zakonczony";
+            default:
+                return "Error! Nieznany stan procesu!";
+        }
+    }
 }
 
