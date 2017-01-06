@@ -22,4 +22,13 @@ public class Dispatcher {
         Dispatcher.processesQueque.pollFirst();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (ProcessBlockController pcb: Dispatcher.processesQueque
+             ) {
+            sb.append(pcb.getName()+"\t");
+        }
+        return sb.toString();
+    }
 }
