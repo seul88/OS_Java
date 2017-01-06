@@ -130,6 +130,7 @@ public class ProcessManager {
      */
     private static void addProcess(ProcessBlockController PCB, ProcessBlockController parent) {
         parent.addChild(PCB);
+        PCB.setParent(parent);
         ++counter;
     }
 
