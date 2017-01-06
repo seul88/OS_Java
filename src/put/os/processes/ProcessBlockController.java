@@ -149,21 +149,48 @@ public class ProcessBlockController {
         return this.children;
     }
 
-    public String returnProcessStateAsString() {
+
+    /**
+     * Return description of PCB
+     * @return
+     */
+    public String toString() {
+
+        StringBuilder desc = new StringBuilder();
+
+        desc.append("===== PCB =====\n");
+
+        desc.append("Name: ");
+        desc.append(NAME);
+
+        desc.append("PID: ");
+        desc.append(PID);
+
+        desc.append("\nState: ");
         switch(this.STATE) {
             case NOWY:
-                return "Nowy";
+                desc.append("Nowy");
+                break;
             case WYKONYWANY:
-                return "Wykonywany";
+                desc.append("Wykonywany");
+                break;
             case OCZEKUJACY:
-                return "Oczekujący";
+                desc.append("Oczekujący");
+                break;
             case GOTOWY:
-                return "Gotowy";
+                desc.append("Gotowy");
+                break;
             case ZAKONCZONY:
-                return "Zakonczony";
+                desc.append("Zakonczony");
+                break;
             default:
-                return "Error! Nieznany stan procesu!";
+                desc.append("Unknown!");
+                break;
         }
+
+        desc.append("\n===============");
+
+        return desc.toString();
     }
 }
 
