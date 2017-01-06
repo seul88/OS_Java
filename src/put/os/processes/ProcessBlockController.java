@@ -192,5 +192,16 @@ public class ProcessBlockController {
 
         return desc.toString();
     }
+
+    /**
+     * Return next value from memory depends on memory pointer
+     * @return Next char of program
+     */
+    public byte readNextFromMemory() {
+
+        //return MemoryManagementUnit.getInstance().readFromMemory();
+
+        return 'p'; // palceholder
+    }
 }
 
