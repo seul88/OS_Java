@@ -2,10 +2,9 @@ package virtual.device;
 
 
 public final class SecondaryMemory {
-    public static char[] memory;
 
-    public SecondaryMemory() {
-        memory = new char[800000];
-    }
+    public static final int size = 800000;
+    public static byte[] memory = new byte[size];
 
+    private SecondaryMemory() {}
 }

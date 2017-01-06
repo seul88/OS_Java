@@ -1,6 +1,5 @@
 package put.os.memory;
-import virtual.device.MainMemory;
-import virtual.device.SecondaryMemory;
+
 /**
  * Created by Damian on 11.12.2016.
  */
@@ -10,9 +9,9 @@ public class ExampleUsage {
     public static void main(String[] args) throws Exception {
 
         //Inicjalizacja struktur
-        SecondaryMemory secondaryMemory = new SecondaryMemory();
-        MainMemory mainMemory = new MainMemory();
-        MemoryManagementUnit memoryManagementUnit = new MemoryManagementUnit(secondaryMemory,mainMemory);
+       // SecondaryMemory secondaryMemory = new SecondaryMemory();
+       // MainMemory mainMemory = new MainMemory();
+        MemoryManagementUnit memoryManagementUnit = new MemoryManagementUnit();
 
         //Wpisanie programow do pamieci
         memoryManagementUnit.addToMemoryFromFile(".\\resources\\Program1");

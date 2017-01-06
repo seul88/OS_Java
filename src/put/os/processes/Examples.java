@@ -4,6 +4,7 @@ public class Examples {
 
     public static void main(String[] args) {
 
+        /*
         ProcessManager manager = new ProcessManager();
 
 
@@ -47,12 +48,13 @@ public class Examples {
 
         ProcessBlockController p11 = new ProcessBlockController(manager.getCounter(),"Proces 10");
         manager.addProcessToRoot(p11);
-
+*/
 
 
         // krotsze wywolanie metod
-       // manager.setRoot(new ProcessBlockController(manager.getCounter(), "PCB"));
-      /*  manager.addProcessToRoot("PROCES X");
+        ProcessManager manager = new ProcessManager();
+        manager.setRoot(new ProcessBlockController(manager.getCounter(), "PCB"));
+       manager.addProcessToRoot("PROCES X");
         manager.addProcess("PROCES Y", "PROCES X");
         manager.addProcess("PROCES Z", "PROCES X");
         manager.addProcess("PROCES A", "PROCES X");
@@ -64,7 +66,7 @@ public class Examples {
         System.out.println(manager.findNode("PROCES X").getName()+" HEREEEE");
         System.out.println(manager.getChildrenNames("PROCES X"));
         if(manager.find("PROCES X")) System.out.println("JUHU");
-*/
+
 
 /*
         System.out.println(p1.getPPID());
@@ -78,6 +80,7 @@ public class Examples {
         manager.removeChild(p5);
         manager.removeChild(p4);
 */
+/*
         System.out.println(manager.getCounter());
         System.out.println(manager.getRoot().getName());
 
@@ -91,7 +94,7 @@ public class Examples {
         p2.removeChild(p5);
         System.out.println(manager.getChildrenNames(p1));
         p1.removeChild(p2);     */
-        System.out.println(manager.getChildrenNames(p1));
+        //System.out.println(manager.getChildrenNames(p1));
 
 
         }

@@ -1,4 +1,5 @@
 package put.os.processes;
+
 import virtual.device.Processor;
 
 import java.util.List;
@@ -6,178 +7,201 @@ import java.util.ArrayList;
 
 public class ProcessBlockController {
 
-	private int PID;    // nr ID procesu
-	private String NAME; // nazwa procesu
-	private int PPID;	// nr ID rodzica procesu
-	private int STATE;
+    public enum States {
+        NOWY,           // proces NOWY, po utworzeniu procesu.
+        WYKONYWANY,     // proces WYKONYWANY, proces jest wykonywany.
+        OCZEKUJACY,     // proces OCZEKUJACY, proces czeka na przydzial zasobu innego niz procesor.
+        GOTOWY,         // proces GOTOWY, proces czeka na przydzial procesora.
+        ZAKONCZONY      // proces ZAKONCZONY, po zakonczeniu wykonywania procesu.
+    }
 
-	//  STATE=0 proces NOWY, po utworzeniu procesu.
-	//	STATE=1 proces WYKONYWANY, proces jest wykonywany.
-	//	STATE=2 proces OCZEKUJACY, proces czeka na przydzial zasobu innego niz procesor.
-	//	STATE=3 proces GOTOWY, proces czeka na przydzial procesora.
-	//  STATE=4 proces ZAKONCZONY, po zakonczeniu wykonywania procesu.
+    private int PID;    // nr ID procesu
+    private String NAME; // nazwa procesu
+    private int PPID;    // nr ID rodzica procesu
+    private States STATE;
 
-	private ProcessBlockController parent;			// rodzic procesu
-	private List<ProcessBlockController> children;	// lista dzieci procesu
+    private ProcessBlockController parent;            // rodzic procesu
+    private List<ProcessBlockController> children;    // lista dzieci procesu
 
+        /*
+        TODO VER1 (ERWIN)
+        W bloku PCB beda rejestry takie same jak w procesorze, ale beda uzywane jedynie przy wybudzaniu/uruchamianiu
+        procesu (wtedy do procesora beda kopiowane rejestry >>tego<< PCB) oraz przy zatrzymywaniu procesu
+        kiedy rejestry procesora zostana skopiowane tutaj.
 
-	public ProcessBlockController(int counter, String name){
-		this.PID = counter;
-		this.NAME = name;
+        Najlepiej utworzyc funkcje np. sleep/pause oraz revoke.
+     */
 
-		this.children = new ArrayList<ProcessBlockController>();
+        /*
+        TODO
 
-		this.STATE = 0;
+        Do tego potrzebujemy przytrzymac inta z numerem page -> Memory management information (z wikipedii)
+         */
 
-		if (this.getParent() != null) this.PPID = this.getParent().getPID();
-		else this.PPID = 0;
+    public ProcessBlockController(int counter, String name) {
+        this.PID = counter;
+        this.NAME = name;
 
-	}
+        this.children = new ArrayList<ProcessBlockController>();
 
+        this.STATE = States.NOWY;
 
-	public void addChild(ProcessBlockController child) {
-		child.setParent(this);
-		child.setPPID(this.getPID());
-		children.add(child);
-	}
+        if (this.getParent() != null) this.PPID = this.getParent().getPID();
+        else this.PPID = 0;
 
-	public boolean removeChild(ProcessBlockController child) {
-		List<ProcessBlockController> list = getChildren();
-		return list.remove(child);
-	}
-
-
-	public String getChildrenNames(){
-		String result="";
-		List<ProcessBlockController> list= this.children;
-		for (ProcessBlockController pcb : list ) {
-			result += pcb.getName() + "\n";
-			result +=  pcb.getChildrenNames();
-		}
-		return result;
-	}
-
-	public boolean equals(int PID){
-		if (PID == this.PID) return true;
-		return false;
-	}
-
-	public boolean equals(ProcessBlockController PCB){
-		if (PCB == this) return true;
-		return false;
-	}
+    }
 
 
+    public void addChild(ProcessBlockController child) {
+        child.setParent(this);
+        child.setPPID(this.getPID());
+        children.add(child);
+    }
+
+    public boolean removeChild(ProcessBlockController child) {
+        List<ProcessBlockController> list = getChildren();
+        return list.remove(child);
+    }
 
 
-	// 				setters			//
+    public String getChildrenNames() {
+        String result = "";
+        List<ProcessBlockController> list = this.children;
+        for (ProcessBlockController pcb : list) {
+            result += pcb.getName() + "\n";
+            result += pcb.getChildrenNames();
+        }
+        return result;
+    }
+
+    public boolean equals(int PID) {
+        if (PID == this.PID) return true;
+        return false;
+    }
+
+    public boolean equals(ProcessBlockController PCB) {
+        if (PCB == this) return true;
+        return false;
+    }
 
 
+    // 				setters			//
+
+    /*
+        TODO VER1 (ERWIN)
+        Chyba nie powinno moc sie zmieniac nazwy ani PID procesu.
+     */
+
+    public void setName(String name) {
+        this.NAME = name;
+    }
+
+    /*
+        TODO VER1 (ERWIN)
+        Zmiana rodzica powinna rowniez usuwac >>ten<< proces z listy [children] dawnego rodzica
+    */
+    public void setParent(ProcessBlockController parent) {
+        this.parent = parent;
+    }
 
 
-	public void setName(String name) {
-		this.NAME = name;
-	}
+    /*
+        TODO VER1 (ERWIN)
+        To powinno byc prywatne i wywolywane przed setParent
+        A najlepiej pozbyc sie tej funkcji i wpisywać recznie ppid w tym obiekcie
+    */
+    public void setPPID(int PPID) {
+        this.PPID = PPID;
+    }
+
+    public void setSTATE(States STATE) {
+        this.STATE = STATE;
+    }
 
 
-	public void setParent(ProcessBlockController parent) {
-		this.parent = parent;
-	}
+    //		getters		//
 
 
+    public int getPID() {
+        return this.PID;
+    }
 
-	public void setPPID(int PPID){
-		this.PPID = PPID;
-	}
+    public int getPPID() {
+        return this.PPID;
+    }
 
-	public void setA(int A){
-		Processor.A = A;
-	}
-
-	public void setB(int B){
-		Processor.B = B;
-	}
-
-	public void setC(int C){
-		Processor.C = C;
-	}
-
-	public void setD(int D){
-		Processor.D = D;
-	}
-
-	public void setE(int E){
-		Processor.E = E;
-	}
-
-	public void setF(int F){
-		Processor.F = F;
-	}
-
-	public void setSTATE(int STATE){
-		if (STATE >= 0 && STATE <= 4) this.STATE = STATE;
-	}
+    public States getSTATE() {
+        return this.STATE;
+    }
 
 
-	//		getters		//
+    public String getName() {
+        return this.NAME;
+    }
 
 
+    public ProcessBlockController getParent() {
+        return this.parent;
+    }
 
 
-
-	public int getPID(){
-		return this.PID;
-	}
-
-
-	public String getName() {
-		return this.NAME;
-	}
+    public List<ProcessBlockController> getChildren() {
+        return this.children;
+    }
 
 
-	public ProcessBlockController getParent() {
-		return this.parent;
-	}
+    /**
+     * Return description of PCB
+     * @return
+     */
+    public String toString() {
 
+        StringBuilder desc = new StringBuilder();
 
-	public List<ProcessBlockController> getChildren() {
-		return this.children;
-	}
+        desc.append("===== PCB =====\n");
 
+        desc.append("Name: ");
+        desc.append(NAME);
 
+        desc.append("PID: ");
+        desc.append(PID);
 
+        desc.append("\nState: ");
+        switch(this.STATE) {
+            case NOWY:
+                desc.append("Nowy");
+                break;
+            case WYKONYWANY:
+                desc.append("Wykonywany");
+                break;
+            case OCZEKUJACY:
+                desc.append("Oczekujący");
+                break;
+            case GOTOWY:
+                desc.append("Gotowy");
+                break;
+            case ZAKONCZONY:
+                desc.append("Zakonczony");
+                break;
+            default:
+                desc.append("Unknown!");
+                break;
+        }
 
-	public int getA(){
-		return Processor.A;
-	}
+        desc.append("\n===============");
 
-	public int getB(){
-		return Processor.B;
-	}
+        return desc.toString();
+    }
 
-	public int getC(){
-		return Processor.C;
-	}
+    /**
+     * Return next value from memory depends on memory pointer
+     * @return Next char of program
+     */
+    public byte readNextFromMemory() {
 
-	public int getD(){
-		return Processor.D;
-	}
+        //return MemoryManagementUnit.getInstance().readFromMemory();
 
-	public int getE(){
-		return Processor.E;
-	}
-
-	public int getF(){
-		return Processor.F;
-	}
-
-	public int getPPID(){
-		return this.PPID;
-	}
-
-	public int getSTATE(){
-		return this.STATE;
-	}
-
+        return 'p'; // palceholder
+    }
 }
 
