@@ -136,6 +136,11 @@ public class Interpreter {
             args.set(i, tokens.get(i+1).toString());
         }
 
+        // Clear tokens
+        for(StringBuilder str : tokens)
+        {
+            str.setLength(0);
+        }
 
         return commands.get(command).execute(args);
     }
