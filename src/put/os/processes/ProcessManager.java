@@ -1,5 +1,7 @@
 package put.os.processes;
 
+import put.os.processorScheduling.Dispatcher;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,14 +98,16 @@ public class ProcessManager {
     */
 
 
-    private static ProcessBlockController find(String NAME) {
+    private static ProcessBlockController find(String name) {
+        if(name.equals("ROOT"))
+            return root;
+
         // wyszukiwanie procesu po nazwie
         for (ProcessBlockController child : root.getChildren())
-            if (child.getName().equals(NAME)) return child;
+            if (child.getName().equals(name)) return child;
 
         return null;
     }
-
 
     private static ProcessBlockController find(ProcessBlockController keyNode) {
         return find(root, keyNode);
@@ -136,7 +140,11 @@ public class ProcessManager {
 
     public static String getChildrenNames(String name) {
         ProcessBlockController pcb = find(name);
-        return pcb.getChildrenNames();
+
+        if(pcb != null)
+            return pcb.getChildrenNames();
+        else
+            return "Nie mozna znalezc tego procesu!";
     }
 
     /**
@@ -156,7 +164,7 @@ public class ProcessManager {
         addProcess(process, parent);
 
         // III. Dodajemy gotowy proces do kolejki FCFS
-
+        Dispatcher.addPCB(process);
     }
 
     public static void createProcess(String name, Integer program) {

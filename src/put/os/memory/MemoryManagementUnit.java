@@ -74,7 +74,7 @@ public class MemoryManagementUnit { //TODO: Zrobic static
         return pageTablesPointer-1;
     }
 
-    public int sizeOfProgram(int nr){
+    public static int sizeOfProgram(int nr){
         return programSizes[nr];
     }
 

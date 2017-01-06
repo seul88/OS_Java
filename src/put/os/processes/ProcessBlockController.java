@@ -87,8 +87,8 @@ public class ProcessBlockController {
      * @param program
      */
     public void setProgram(Integer program) {
-        //this.numberOfProgram = program;
-        //this.sizeOfProgram = MemoryManagementUnit.getProgramSize();
+        this.numberOfProgram = program;
+        this.sizeOfProgram = MemoryManagementUnit.sizeOfProgram(program);
         this.pointer = 0;
     }
 

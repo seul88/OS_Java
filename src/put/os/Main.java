@@ -192,6 +192,13 @@ public class Main {
                 break;
             }
 
+            // Show processes
+            case 5: {
+                System.out.println(ProcessManager.getChildrenNames("ROOT"));
+                waitForEnter();
+                break;
+            }
+
             // Back to main menu
             case 6: {
                 mode = Mode.MAIN;

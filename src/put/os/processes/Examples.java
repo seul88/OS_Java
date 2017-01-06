@@ -52,6 +52,7 @@ public class Examples {
 
 
         // krotsze wywolanie metod
+        /*
         ProcessManager manager = new ProcessManager();
         manager.setRoot(new ProcessBlockController(manager.getCounter(), "PCB"));
        manager.addProcessToRoot("PROCES X");
