@@ -12,36 +12,22 @@ public class ProcessManager {
 
     public ProcessManager() {}
 
-    public static boolean isEmpty() {
-        return root == null;
-    }
-
-    public static ProcessBlockController getRoot() {
-        return root;
-    }
-
-    public static int getCounter() {
-        return counter;
-    }
-
-
-
-    // NOWA FUNKCJA -> dzięki niej można usuwać proces, który ma dzieci
-    // dzieci są usynawiane przez roota
+    /**
+     * Remove process
+     * @param name Process Name
+     */
     public void removeProcess(String name){
         ProcessBlockController pcb = find(name);
-        if (!pcb.getChildren().equals(null))
+
+        if (!pcb.getChildren().isEmpty())
             for (ProcessBlockController child : pcb.getChildren())
-            root.addChild(child);
-        removeChild(pcb);
+            {
+                root.addChild(child);
+                child.setParent(root);
+            }
+
+        pcb.getParent().removeChild(pcb);
     }
-
-
-    public static void removeChild(ProcessBlockController child) {
-        child.removeChild(child);
-    }
-
-
 
     private static int getNumberOfChildren(ProcessBlockController node) {
         int n = node.getChildren().size();
@@ -94,29 +80,20 @@ public class ProcessManager {
     }
 
 
-/*      zmienione na wersję z listą gotowych procesów (niżej)
-
-    public static ProcessBlockController returnReadyProcess() {
-        for (ProcessBlockController child : root.getChildren())
-            if (child.getSTATE() == ProcessBlockController.States.GOTOWY) return child;
-
-        return null;
-    }
-*/
     /**
      * WYSZUKIWANIE
      */
 
+    /*
     private ArrayList<ProcessBlockController> returnListOfReadyProcesses(String NAME) {
         ArrayList<ProcessBlockController> lista = new ArrayList<ProcessBlockController>();
 
         for (ProcessBlockController child : root.getChildren())
-            if (child.getSTATE().equals("GOTOWY")) lista.add(child);
+            if (child.getSTATE() == ProcessBlockController.States.GOTOWY) lista.add(child);
 
         return lista;
     }
-
-
+    */
 
 
     private static ProcessBlockController find(String NAME) {
@@ -153,6 +130,7 @@ public class ProcessManager {
      */
     private static void addProcess(ProcessBlockController PCB, ProcessBlockController parent) {
         parent.addChild(PCB);
+        PCB.setParent(parent);
         ++counter;
     }
 
@@ -172,7 +150,7 @@ public class ProcessManager {
         ProcessBlockController process = new ProcessBlockController(counter, name);
 
         // Przypisujemy mu program
-        //process.setMemory(program);
+        process.setProgram(program);
 
         // II. Dodajemy process do drzewa
         addProcess(process, parent);
