@@ -1,6 +1,7 @@
 package put.os;
 
 import put.os.fileSystem.Filesystem;
+import put.os.interpreter.Interpreter;
 import put.os.memory.MemoryManagementUnit;
 import put.os.processes.ProcessBlockController;
 import put.os.processes.ProcessManager;
@@ -178,7 +179,50 @@ public class Main {
                 // Albo wywolaj funkcje w ProcessManager ktora wywola funkcje wlaczajaca PCB z kolejki
                 // a potem wpisze ja do RUNNING i zwroci tutaj
 
-                ProcessBlockController pcb = null;
+                if(/* zostal uruchomiony*/ true) {
+                    mode = Mode.INTERPRETER;
+                }
+
+                break;
+            }
+        }
+    }
+
+    public static void interpreterMode() {
+        System.out.println("[Process in progress!]");
+        System.out.print(
+            "1 - Next command \n" +
+            "2 - Run all process \n" +
+            "3 - Show registry \n" +
+            "4 - Stop process \n"
+        );
+
+        ProcessBlockController activeProcess = ProcessManager.getRunning();
+        Interpreter interpeter = new Interpreter(activeProcess);
+
+        int choose = reader.nextInt();
+
+        switch(choose) {
+
+            // Next command
+            case 1:
+            {
+                interpeter.nextLine();
+                break;
+            }
+
+            // Run all
+            case 2: {
+                interpeter.runAll();
+
+                break;
+            }
+
+            // Stop process
+            case 4: {
+                ProcessManager.stopRunning();
+                mode = Mode.PROCESS;
+                break;
             }
         }
     }
@@ -203,6 +247,9 @@ public class Main {
                     break;
                 case PROCESS:
                     processMode();
+                    break;
+                case INTERPRETER:
+                    interpreterMode();
                     break;
                 case EXIT:
                     clearScreen();

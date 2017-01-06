@@ -168,4 +168,10 @@ public class ProcessManager {
         return RUNNING;
     }
 
+    /**
+     *  Stop now running PCB
+     */
+    public static void stopRunning() {
+        //RUNNING.sleep();
+    }
 }
