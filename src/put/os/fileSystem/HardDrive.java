@@ -1,5 +1,6 @@
 package put.os.fileSystem;
 
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class HardDrive 	// reprezentacja przestrzeni dyskowej 
@@ -105,5 +106,58 @@ public class HardDrive 	// reprezentacja przestrzeni dyskowej
 	public String PrintFileFromMemory(String _fileName)
 	{
 		return AllocateMemory.ReadFile(_fileName);
+	}
+	
+	public static String PrintDiscContent(int printMode)
+	{
+		String result = null;
+		
+		if (printMode == 1)
+		{
+			result = "";
+			int blockCount = 0;
+			for (int i = 0; i < drive.length; i++)
+			{
+				if (i % blockSize == 0)
+				{					
+					result += "\n";
+					result += blockCount + ":";
+					blockCount++;
+				}
+				
+				result += "\t" + drive[i];				
+			}
+		}
+		else if (printMode == 2)
+		{
+			result = "";
+			int blockCount = 0;
+			for (int i = 0; i < drive.length; i++)
+			{
+				if (i % blockSize == 0)
+				{					
+					result += "\n";
+					result += blockCount + ":";
+					blockCount++;
+				}
+				if (drive[i] == -1)
+				{
+					result += "\t" + "";
+				}
+				else					
+				{
+					byte[] tempTable = new byte[1];
+					tempTable[0] = drive[i];
+					String temp = new String(tempTable, Charset.forName("UTF-8"));
+					result += "\t" + temp;	
+				}								
+			}
+		}
+		else			
+		{
+			result = null;
+		}
+		
+		return result;
 	}
 }
