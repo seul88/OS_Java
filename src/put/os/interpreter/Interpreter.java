@@ -25,30 +25,33 @@ public class Interpreter {
 
     public Interpreter(ProcessBlockController pcb) {
         this.pcb = pcb;
-        this.tokens.setSize(3);
+        this.tokens = new Vector<StringBuilder>(3);
 
         // MOV
         commands.put("MOV", new Command(2) {
             private int getSource(String arg) {
-                if (arg.contains("[0-9]+")) {
+                try
+                {
                     return Integer.parseInt(arg);
                 }
-
-                switch (arg) {
-                    case "A":
-                        return Processor.A;
-                    case "B":
-                        return Processor.B;
-                    case "C":
-                        return Processor.C;
-                    case "D":
-                        return Processor.D;
-                    case "E":
-                        return Processor.E;
-                    case "F":
-                        return Processor.F;
-                    default:
-                        return 0;
+                catch(NumberFormatException nfe)
+                {
+                    switch (arg) {
+                        case "A":
+                            return Processor.A;
+                        case "B":
+                            return Processor.B;
+                        case "C":
+                            return Processor.C;
+                        case "D":
+                            return Processor.D;
+                        case "E":
+                            return Processor.E;
+                        case "F":
+                            return Processor.F;
+                        default:
+                            return 0;
+                    }
                 }
             }
 
@@ -89,9 +92,17 @@ public class Interpreter {
 
     public boolean nextLine() {
 
+        tokens.add(0, new StringBuilder());
+
         // Command
         while (true) {
-            byte data = this.pcb.readNextFromMemory();
+            char data;
+
+            try {
+                data = (char) this.pcb.readNextFromMemory();
+            } catch (Exception e) {
+                break;
+            }
 
             if(data != ' ' && data != '\n')
             {
@@ -115,9 +126,20 @@ public class Interpreter {
         int argNeeded = commands.get(command).getArgLength();
         int argIndex = 0;
 
+        for(int i = 0; i < argNeeded; i++)
+        {
+            tokens.add(i+1, new StringBuilder());
+        }
+
         while(argIndex != argNeeded)
         {
-            byte data = this.pcb.readNextFromMemory();
+            char data;
+
+            try {
+                data = (char) this.pcb.readNextFromMemory();
+            } catch (Exception e) {
+                break;
+            }
 
             if(data != ' ' && data != '\n')
             {
@@ -131,16 +153,13 @@ public class Interpreter {
 
         // Create vector of arguments
         Vector<String> args = new Vector<>(argNeeded);
-        for(int i = 0; i != args.size(); i++)
+        for(int i = 0; i != argNeeded; i++)
         {
-            args.set(i, tokens.get(i+1).toString());
+            args.add(i, tokens.get(i+1).toString());
         }
 
         // Clear tokens
-        for(StringBuilder str : tokens)
-        {
-            str.setLength(0);
-        }
+        tokens.clear();
 
         return commands.get(command).execute(args);
     }

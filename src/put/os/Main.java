@@ -6,6 +6,7 @@ import put.os.memory.MemoryManagementUnit;
 import put.os.processes.ProcessBlockController;
 import put.os.processes.ProcessManager;
 import put.os.processorScheduling.Dispatcher;
+import virtual.device.Processor;
 
 import java.io.File;
 import java.io.IOException;
@@ -201,6 +202,10 @@ public class Main {
                 if(ProcessManager.runProcess()) {
                     mode = Mode.INTERPRETER;
                 }
+                else
+                {
+                    System.out.println("Kolejka jest pusta!");
+                }
 
                 break;
             }
@@ -249,13 +254,27 @@ public class Main {
             // Next command
             case 1:
             {
-                interpreter.nextLine();
+                System.out.print(interpreter.nextLine());
                 break;
             }
 
             // Run all
             case 2: {
                 interpreter.runAll();
+                break;
+            }
+
+            // Registry show
+            case 3: {
+                System.out.println("Registry of Processor");
+                System.out.print(
+                        "\tA: " + Processor.A +
+                        "\tB: " + Processor.B +
+                        "\tC: " + Processor.C +
+                        "\tD: " + Processor.D +
+                        "\tE: " + Processor.E +
+                        "\tF: " + Processor.F
+                );
                 break;
             }
 
