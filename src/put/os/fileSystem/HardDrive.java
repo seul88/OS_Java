@@ -77,7 +77,7 @@ public class HardDrive 	// reprezentacja przestrzeni dyskowej
 		
 		if (catalog.size() <=0)
 		{
-			result = "Brak plikow.";
+			result = "No files found.";
 		}
 		else
 		{
@@ -108,7 +108,23 @@ public class HardDrive 	// reprezentacja przestrzeni dyskowej
 		return AllocateMemory.ReadFile(_fileName);
 	}
 	
-	public static String PrintDiscContent(int printMode)
+	public INode GetInodeForFile(String _fileName)
+	{
+		INode result = null;
+				
+		for (CatalogPosition position : catalog)
+		{
+			if (position.GetFileName().equals(_fileName))
+			{				
+				result = iNodeTable[position.GetIndexOfINode()];
+				break;
+			}
+		}				
+		
+		return result;
+	}
+	
+	public String PrintDiscContent(int printMode)
 	{
 		String result = null;
 		

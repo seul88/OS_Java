@@ -38,26 +38,23 @@ public class AllocateMemory
 		{
 			indexBlockIsNeaded = true;
 		}
-		else if (fileSize > 2 + (HardDrive.blockSize * HardDrive.blockSize))
+		if (fileSize >  (HardDrive.blockSize * HardDrive.blockSize))
 		{
 			return memoryAllocateState.fileExceedsMaximumSize;
 		}
 		boolean isEnoughtSpace = false;
-		int howManyBlocksIsNeaded = 0;
-		if (indexBlockIsNeaded)
+		int howManyBlocksIsNeaded = 0;		
+		howManyBlocksIsNeaded = (int) Math.ceil((float)(fileContentInBytes.length) / HardDrive.blockSize);
+		if (howManyBlocksIsNeaded > 2)
 		{
-			howManyBlocksIsNeaded = (int) Math.ceil((float)(fileContentInBytes.length - 2) / HardDrive.blockSize);
-			isEnoughtSpace = CheckIfDriveHasEnoughFreeMemoryForFile(howManyBlocksIsNeaded);	
+			howManyBlocksIsNeaded++;
 		}
-		else
-		{
-			isEnoughtSpace = true;	
-		}
+		isEnoughtSpace = CheckIfDriveHasEnoughFreeMemoryForFile(howManyBlocksIsNeaded);	
 		
 		if (isEnoughtSpace)
 		{
 			int tempINodeNumber = GetFirstEmptyINode();
-			int tempCounter = 2;
+			int tempCounter = 0;
 			if (tempINodeNumber == -1)
 			{
 				return memoryAllocateState.notEmptyINode;
@@ -65,7 +62,7 @@ public class AllocateMemory
 			int numberOfIndexBlock = GetFirstFreeBlockNumber();
 			HardDrive.vector[numberOfIndexBlock] = true;
 			List<Integer> listOfDataBlocks = new ArrayList<Integer>();
-			for (int i = 0; i < howManyBlocksIsNeaded; i++)
+			for (int i = 0; i < howManyBlocksIsNeaded - 1; i++)
 			{
 				int tempBlockIndex = GetFirstFreeBlockNumber();
 				HardDrive.vector[tempBlockIndex] = true;
@@ -83,12 +80,25 @@ public class AllocateMemory
 					tempCounter++;
 				}
 			}
+			byte variable1 = -1;
+			byte variable2 = -1;
 			for(int i = 0; i < listOfDataBlocks.size(); i++)
 			{
-				HardDrive.drive[(HardDrive.blockSize * numberOfIndexBlock) + i] = listOfDataBlocks.get(i).byteValue();
+				if (i == 0)
+				{
+					variable1 = listOfDataBlocks.get(i).byteValue();
+				}
+				else if (i == 1)						
+				{
+					variable2 = listOfDataBlocks.get(i).byteValue();
+				}
+				else
+				{
+					HardDrive.drive[(HardDrive.blockSize * numberOfIndexBlock) + i - 2] = listOfDataBlocks.get(i).byteValue();	
+				}					
 			}
-			
-			INode tempINode = new INode(tempINodeNumber, fileContentInBytes[0], fileContentInBytes[1], fileSize, howManyBlocksIsNeaded, numberOfIndexBlock);
+
+			INode tempINode = new INode(tempINodeNumber, variable1, variable2, fileSize, howManyBlocksIsNeaded -1, numberOfIndexBlock);
 			HardDrive.iNodeTable[tempINodeNumber] = tempINode;
 			HardDrive.catalog.add(new CatalogPosition(fileName, tempINodeNumber));
 			result = memoryAllocateState.successfulyAllocatedMemory;
@@ -119,7 +129,23 @@ public class AllocateMemory
 		else			
 		{
 			INode iNodeOfFileToDelete = HardDrive.iNodeTable[position.GetIndexOfINode()];
-			if (iNodeOfFileToDelete.GetBlockCounter() > 0)
+			if (iNodeOfFileToDelete.GetDirectBlock1() >= 0)
+			{
+				boolean clearBlockResult = ClearBlock(iNodeOfFileToDelete.GetDirectBlock2());
+				if (!clearBlockResult)
+				{
+					return memoryAllocateState.Error;
+				}
+			}
+			if (iNodeOfFileToDelete.GetDirectBlock2() >= 0)
+			{
+				boolean clearBlockResult = ClearBlock(iNodeOfFileToDelete.GetDirectBlock2());
+				if (!clearBlockResult)
+				{
+					return memoryAllocateState.Error;
+				}
+			}
+			if (iNodeOfFileToDelete.GetBlockCounter() > 2)
 			{				
 				int tempIndexBlockNumber = iNodeOfFileToDelete.GetFileIndexBlock();
 				byte[] tempIndexBlock = ReadBlock(tempIndexBlockNumber);
@@ -170,12 +196,34 @@ public class AllocateMemory
 		{
 			byte[] fileInBytes = new byte[HardDrive.blockSize * HardDrive.blockSize];
 			INode iNodeOfFileToRead = HardDrive.iNodeTable[position.GetIndexOfINode()];
-			if (iNodeOfFileToRead.GetBlockCounter() > 0)
+			int tempCounter = 0;
+			if (iNodeOfFileToRead.GetDirectBlock1() >= 0)
 			{
-				fileInBytes[0] = iNodeOfFileToRead.GetDirectBlock1();
-				fileInBytes[1] = iNodeOfFileToRead.GetDirectBlock2();
-				int tempCounter = 2;
-				int tempIndexBlockNumber = iNodeOfFileToRead.GetFileIndexBlock();
+				byte[] tempIndexBlock = ReadBlock(iNodeOfFileToRead.GetDirectBlock1());
+				for (int i = 0; i < tempIndexBlock.length; i++)
+				{
+					if (tempIndexBlock[i] != -1)
+					{
+						fileInBytes[tempCounter] = tempIndexBlock[i];
+						tempCounter++;	
+					}					
+				}	
+			}
+			if (iNodeOfFileToRead.GetDirectBlock2() >= 0)
+			{
+				byte[] tempIndexBlock = ReadBlock(iNodeOfFileToRead.GetDirectBlock2());
+				for (int i = 0; i < tempIndexBlock.length; i++)
+				{
+					if (tempIndexBlock[i] != -1)
+					{
+						fileInBytes[tempCounter] = tempIndexBlock[i];
+						tempCounter++;	
+					}					
+				}	
+			}
+			int tempIndexBlockNumber = iNodeOfFileToRead.GetFileIndexBlock();
+			if (tempIndexBlockNumber >= 0)
+			{
 				byte[] tempIndexBlock = ReadBlock(tempIndexBlockNumber);
 				for (int i = 0; i < tempIndexBlock.length; i++)
 				{
@@ -192,12 +240,7 @@ public class AllocateMemory
 							}
 						}						
 					}					
-				}
-			}
-			else				
-			{
-				fileInBytes[0] = iNodeOfFileToRead.GetDirectBlock1();
-				fileInBytes[1] = iNodeOfFileToRead.GetDirectBlock2();
+				}	
 			}
 			result = new String(fileInBytes, Charset.forName("UTF-8"));
 		}
