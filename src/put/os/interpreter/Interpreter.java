@@ -15,25 +15,13 @@ public class Interpreter {
         public Command(int argLength) { this.argLength = argLength; }
         public int getArgLength() { return argLength; }
 
-        public boolean execute(Vector<String> arg) { return false; }
-    }
-    private static Map<String, Command> commands = new HashMap<>();
-
-    private Vector<StringBuilder> tokens;
-
-    private ProcessBlockController pcb;
-
-    public Interpreter(ProcessBlockController pcb) {
-        this.pcb = pcb;
-        this.tokens.setSize(3);
-
-        // MOV
-        commands.put("MOV", new Command(2) {
-            private int getSource(String arg) {
-                if (arg.contains("[0-9]+")) {
-                    return Integer.parseInt(arg);
-                }
-
+        public int getSource(String arg) {
+            try
+            {
+                return Integer.parseInt(arg);
+            }
+            catch(NumberFormatException nfe)
+            {
                 switch (arg) {
                     case "A":
                         return Processor.A;
@@ -51,6 +39,21 @@ public class Interpreter {
                         return 0;
                 }
             }
+        }
+        public boolean execute(Vector<String> arg) { return false; }
+    }
+    private static Map<String, Command> commands = new HashMap<>();
+
+    private Vector<StringBuilder> tokens;
+
+    private ProcessBlockController pcb;
+
+    public Interpreter(ProcessBlockController pcb) {
+        this.pcb = pcb;
+        this.tokens = new Vector<StringBuilder>(3);
+
+        // MOV
+        commands.put("MOV", new Command(2) {
 
             @Override
             public boolean execute(Vector<String> arg) {
@@ -84,14 +87,213 @@ public class Interpreter {
                     }
                 }
             }
+
+        });
+
+        // MP
+        commands.put("MP", new Command(2) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+                switch (arg.get(0)) {
+                    case "A": {
+                        Processor.A *= getSource(arg.get(1));
+                        return true;
+                    }
+                    case "B": {
+                        Processor.B *= getSource(arg.get(1));
+                        return true;
+                    }
+                    case "C": {
+                        Processor.C *= getSource(arg.get(1));
+                        return true;
+                    }
+                    case "D": {
+                        Processor.D *= getSource(arg.get(1));
+                        return true;
+                    }
+                    case "E": {
+                        Processor.E *= getSource(arg.get(1));
+                        return true;
+                    }
+                    case "F": {
+                        Processor.F *= getSource(arg.get(1));
+                        return true;
+                    }
+                    default: {
+                        return false;
+                    }
+                }
+            }
+
+        });
+
+        // ADD
+        commands.put("ADD", new Command(2) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+                switch (arg.get(0)) {
+                    case "A": {
+                        Processor.A += getSource(arg.get(1));
+                        return true;
+                    }
+                    case "B": {
+                        Processor.B += getSource(arg.get(1));
+                        return true;
+                    }
+                    case "C": {
+                        Processor.C += getSource(arg.get(1));
+                        return true;
+                    }
+                    case "D": {
+                        Processor.D += getSource(arg.get(1));
+                        return true;
+                    }
+                    case "E": {
+                        Processor.E += getSource(arg.get(1));
+                        return true;
+                    }
+                    case "F": {
+                        Processor.F += getSource(arg.get(1));
+                        return true;
+                    }
+                    default: {
+                        return false;
+                    }
+                }
+            }
+
+        });
+
+        // SB
+        commands.put("SB", new Command(2) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+                switch (arg.get(0)) {
+                    case "A": {
+                        Processor.A -= getSource(arg.get(1));
+                        return true;
+                    }
+                    case "B": {
+                        Processor.B -= getSource(arg.get(1));
+                        return true;
+                    }
+                    case "C": {
+                        Processor.C -= getSource(arg.get(1));
+                        return true;
+                    }
+                    case "D": {
+                        Processor.D -= getSource(arg.get(1));
+                        return true;
+                    }
+                    case "E": {
+                        Processor.E -= getSource(arg.get(1));
+                        return true;
+                    }
+                    case "F": {
+                        Processor.F -= getSource(arg.get(1));
+                        return true;
+                    }
+                    default: {
+                        return false;
+                    }
+                }
+            }
+
+        });
+
+        // INC
+        commands.put("INC", new Command(1) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+                switch (arg.get(0)) {
+                    case "A": {
+                        Processor.A++;
+                        return true;
+                    }
+                    case "B": {
+                        Processor.B++;
+                        return true;
+                    }
+                    case "C": {
+                        Processor.C++;
+                        return true;
+                    }
+                    case "D": {
+                        Processor.D++;
+                        return true;
+                    }
+                    case "E": {
+                        Processor.E++;
+                        return true;
+                    }
+                    case "F": {
+                        Processor.F++;
+                        return true;
+                    }
+                    default: {
+                        return false;
+                    }
+                }
+            }
+
+        });
+
+        // DEC
+        commands.put("DEC", new Command(1) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+                switch (arg.get(0)) {
+                    case "A": {
+                        Processor.A--;
+                        return true;
+                    }
+                    case "B": {
+                        Processor.B--;
+                        return true;
+                    }
+                    case "C": {
+                        Processor.C--;
+                        return true;
+                    }
+                    case "D": {
+                        Processor.D--;
+                        return true;
+                    }
+                    case "E": {
+                        Processor.E--;
+                        return true;
+                    }
+                    case "F": {
+                        Processor.F--;
+                        return true;
+                    }
+                    default: {
+                        return false;
+                    }
+                }
+            }
+
         });
     }
 
     public boolean nextLine() {
 
+        tokens.add(0, new StringBuilder());
+
         // Command
         while (true) {
-            byte data = this.pcb.readNextFromMemory();
+            char data;
+
+            try {
+                data = (char) this.pcb.readNextFromMemory();
+            } catch (Exception e) {
+                break;
+            }
 
             if(data != ' ' && data != '\n')
             {
@@ -105,6 +307,8 @@ public class Interpreter {
 
         String command = tokens.get(0).toString();
 
+        System.out.println(command);
+
         // Check command
         if(!commands.containsKey(command))
         {
@@ -115,32 +319,37 @@ public class Interpreter {
         int argNeeded = commands.get(command).getArgLength();
         int argIndex = 0;
 
+        for(int i = 0; i < argNeeded; i++)
+        {
+            tokens.add(i+1, new StringBuilder());
+        }
+
         while(argIndex != argNeeded)
         {
-            byte data = this.pcb.readNextFromMemory();
+            char data;
+
+            try {
+                data = (char) this.pcb.readNextFromMemory();
+            } catch (Exception e) {
+                break;
+            }
 
             if(data != ' ' && data != '\n')
             {
                 tokens.get(argIndex+1).append(data);
-            }
-            else
-            {
-               ++argIndex;
+                ++argIndex;
             }
         }
 
         // Create vector of arguments
         Vector<String> args = new Vector<>(argNeeded);
-        for(int i = 0; i != args.size(); i++)
+        for(int i = 0; i != argNeeded; i++)
         {
-            args.set(i, tokens.get(i+1).toString());
+            args.add(i, tokens.get(i+1).toString());
         }
 
         // Clear tokens
-        for(StringBuilder str : tokens)
-        {
-            str.setLength(0);
-        }
+        tokens.clear();
 
         return commands.get(command).execute(args);
     }

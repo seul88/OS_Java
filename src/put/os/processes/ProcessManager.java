@@ -144,7 +144,16 @@ public class ProcessManager {
         if(pcb != null)
             return pcb.getChildrenNames();
         else
-            return "Nie mozna znalezc tego procesu!";
+            return "Nie mozna znalezc tego procesu rodzica!";
+    }
+
+    public static String drawTree(String name) {
+        ProcessBlockController pcb = find(name);
+
+        if(pcb != null)
+            return pcb.drawTree(0);
+        else
+            return "Nie mozna znalezc tego procesu rodzica!";
     }
 
     /**
@@ -152,7 +161,7 @@ public class ProcessManager {
      * @param name Name of PCB
      * @param program numer tablicy stron do danego programu [of MemoryManagementUnit]
      */
-    public static void createProcess(String name, Integer program, ProcessBlockController parent) {
+    public static String createProcess(String name, Integer program, ProcessBlockController parent) {
 
         // I. Tworzymy process
         ProcessBlockController process = new ProcessBlockController(counter, name);
@@ -165,10 +174,16 @@ public class ProcessManager {
 
         // III. Dodajemy gotowy proces do kolejki FCFS
         Dispatcher.addPCB(process);
+
+        return name;
     }
 
-    public static void createProcess(String name, Integer program) {
-        createProcess(name, program, root);
+    public static String createProcess(String name, Integer program) {
+        return createProcess(name, program, root);
+    }
+
+    public static String createProcess(Integer program) {
+        return createProcess("Process#" + counter, program, root);
     }
 
 
@@ -185,5 +200,19 @@ public class ProcessManager {
      */
     public static void stopRunning() {
         //RUNNING.sleep();
+    }
+
+    public static boolean runProcess() {
+        ProcessBlockController pcb = Dispatcher.pollHead();
+
+        if(pcb != null)
+        {
+            RUNNING = pcb;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

@@ -113,6 +113,21 @@ public class ProcessBlockController {
         return result;
     }
 
+    public String drawTree(int level) {
+        String result = "";
+
+        for(int i = 0; i<level; i++)
+            result += '\t';
+
+        result += "-" + this.NAME + "\n";
+
+        for (ProcessBlockController pcb : this.children) {
+            result += pcb.drawTree(level+1);
+        }
+
+        return result;
+    }
+
     /**
      * Check pcb
      * @param PID
@@ -203,11 +218,17 @@ public class ProcessBlockController {
      * Return next value from memory depends on memory pointer
      * @return Next char of program
      */
-    public byte readNextFromMemory() {
-
-        //return MemoryManagementUnit.getInstance().readFromMemory();
-
-        return 'p'; // palceholder
+    public byte readNextFromMemory() throws Exception {
+        if(pointer >= sizeOfProgram)
+        {
+            throw new Exception("End of program!");
+        }
+        else
+        {
+            byte mem = MemoryManagementUnit.readFromMemory(pointer, numberOfProgram);
+            ++pointer;
+            return mem;
+        }
     }
 
 

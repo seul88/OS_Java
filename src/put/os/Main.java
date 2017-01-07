@@ -5,6 +5,8 @@ import put.os.interpreter.Interpreter;
 import put.os.memory.MemoryManagementUnit;
 import put.os.processes.ProcessBlockController;
 import put.os.processes.ProcessManager;
+import put.os.processorScheduling.Dispatcher;
+import virtual.device.Processor;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,11 +68,30 @@ public class Main {
     private static void clearScreen() {
         // Stupid java xd
 
-        System.out.println("_________________________________\n");
+        System.out.println("========================================");
+    }
 
+    private static void clearScreen(String text) {
+        // Stupid java xd
+
+        int border = (40 - text.length()) / 2;
+
+        System.out.print('\n');
+
+        for(int i = 0; i < border; i++)
+            System.out.print('=');
+
+        System.out.print(text);
+
+        for(int i = 0; i < border; i++)
+            System.out.print('=');
+
+        System.out.print('\n');
     }
 
     private static void waitForEnter() {
+
+        System.out.print("\n*click*");
         try {
             System.in.read();
         } catch (IOException e) {
@@ -167,8 +188,8 @@ public class Main {
 
                 if(avaiablePrograms.containsKey(chosenProgram))
                 {
-                    ProcessManager.createProcess( chosenProgram /* Name */, avaiablePrograms.get(chosenProgram)/* memory */);
-                    System.out.println("PCB added!");
+                    String process = ProcessManager.createProcess( avaiablePrograms.get(chosenProgram) );
+                    System.out.println("PCB " + process +" added!");
 
                     waitForEnter();
                 }
@@ -178,23 +199,29 @@ public class Main {
 
             // Run process
             case 2: {
-
-                // Wywolaj funkcje z FCFS
-                // Wlacz i zwroc wlaczony PCB z kolejki
-
-                // Albo wywolaj funkcje w ProcessManager ktora wywola funkcje wlaczajaca PCB z kolejki
-                // a potem wpisze ja do RUNNING i zwroci tutaj
-
-                if(/* zostal uruchomiony*/ true) {
+                if(ProcessManager.runProcess()) {
                     mode = Mode.INTERPRETER;
+                }
+                else
+                {
+                    System.out.println("Kolejka jest pusta!");
                 }
 
                 break;
             }
 
+            // Show PCB Queue
+            case 3: {
+                System.out.println("[FCFS Queue]");
+                System.out.println(Dispatcher.drawQueue());
+                waitForEnter();
+                break;
+            }
+
             // Show processes
             case 5: {
-                System.out.println(ProcessManager.getChildrenNames("ROOT"));
+                System.out.println("[PCB TREE]");
+                System.out.print(ProcessManager.drawTree("ROOT"));
                 waitForEnter();
                 break;
             }
@@ -227,13 +254,27 @@ public class Main {
             // Next command
             case 1:
             {
-                interpreter.nextLine();
+                System.out.print(interpreter.nextLine());
                 break;
             }
 
             // Run all
             case 2: {
                 interpreter.runAll();
+                break;
+            }
+
+            // Registry show
+            case 3: {
+                System.out.println("Registry of Processor");
+                System.out.print(
+                        "\tA: " + Processor.A +
+                        "\tB: " + Processor.B +
+                        "\tC: " + Processor.C +
+                        "\tD: " + Processor.D +
+                        "\tE: " + Processor.E +
+                        "\tF: " + Processor.F
+                );
                 break;
             }
 
@@ -267,19 +308,19 @@ public class Main {
                     logoMode();
                     break;
                 case FILESYSTEM:
-                    clearScreen();
+                    clearScreen("FILESYSTEM");
                     filesystemMode();
                     break;
                 case MAIN:
-                    clearScreen();
+                    clearScreen("MAIN");
                     mainMode();
                     break;
                 case PROCESS:
-                    clearScreen();
+                    clearScreen("PROCESSES");
                     processMode();
                     break;
                 case INTERPRETER:
-                    clearScreen();
+                    clearScreen("INTERPRETER");
                     interpreterMode();
                     break;
                 case EXIT:

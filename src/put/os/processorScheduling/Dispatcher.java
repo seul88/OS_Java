@@ -18,10 +18,23 @@ public class Dispatcher {
         Dispatcher.processesQueque.remove(pcb);
     }
 
-    public static void pollHead () {
-        Dispatcher.processesQueque.pollFirst();
+    public static ProcessBlockController pollHead () {
+        return Dispatcher.processesQueque.pollFirst();
     }
 
+    public static String drawQueue() {
+        StringBuilder sb = new StringBuilder();
+
+        for (ProcessBlockController pcb: Dispatcher.processesQueque) {
+            sb.append("<  ");
+            sb.append(pcb.getName());
+            sb.append("  ");
+        }
+
+        return sb.toString();
+    }
+
+    // Not working for static members ;<
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
