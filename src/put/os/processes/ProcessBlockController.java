@@ -31,28 +31,6 @@ public class ProcessBlockController {
     private ProcessBlockController parent;            // rodzic procesu
     private List<ProcessBlockController> children;    // lista dzieci procesu
 
-        /*
-        TODO VER1 (ERWIN)
-        W bloku PCB beda rejestry takie same jak w procesorze, ale beda uzywane jedynie przy wybudzaniu/uruchamianiu
-        procesu (wtedy do procesora beda kopiowane rejestry >>tego<< PCB) oraz przy zatrzymywaniu procesu
-        kiedy rejestry procesora zostana skopiowane tutaj.
-
-        Najlepiej utworzyc funkcje np. sleep/pause oraz revoke.
-     */
-
-        /*
-        TODO
-        Do tego potrzebujemy przytrzymac inta z numerem page -> Memory management information (z wikipedii)
-
-
-        Dodałem te 3 pola do pracy z pamięcią:
-        private int numberOfProgram;		// numer programu
-        private int pointer;				// wskaźnik na znak czytany z dysku
-        private int sizeOfProgram;			// rozmiar programu, porównywany z pointerem
-
-        to wystarczy?
-         */
-
     public ProcessBlockController(int counter, String name) {
         this.PID = counter;
         this.NAME = name;
