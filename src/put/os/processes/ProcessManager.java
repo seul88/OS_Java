@@ -9,7 +9,8 @@ import java.util.List;
 public class ProcessManager {
 
     private static int counter = 1;
-    private static ProcessBlockController root = new ProcessBlockController(0, "ROOT");
+    // Procesy systemowe zaczynaja sie od gwiazdki
+    private static ProcessBlockController root = new ProcessBlockController(0, "*ROOT");
     private static ProcessBlockController RUNNING = null;
 
     public ProcessManager() {}
@@ -173,6 +174,7 @@ public class ProcessManager {
         addProcess(process, parent);
 
         // III. Dodajemy gotowy proces do kolejki FCFS
+        process.setSTATE(ProcessBlockController.States.GOTOWY);
         Dispatcher.addPCB(process);
 
         return name;
@@ -183,7 +185,7 @@ public class ProcessManager {
     }
 
     public static String createProcess(Integer program) {
-        return createProcess("Process#" + counter, program, root);
+        return createProcess("USERPROG#" + counter, program, root);
     }
 
 
@@ -199,6 +201,9 @@ public class ProcessManager {
      *  Stop now running PCB
      */
     public static void stopRunning() {
+        ProcessBlockController runningPCB = RUNNING;
+
+
         //RUNNING.sleep();
     }
 
@@ -208,6 +213,7 @@ public class ProcessManager {
         if(pcb != null)
         {
             RUNNING = pcb;
+            pcb.setSTATE(ProcessBlockController.States.WYKONYWANY);
             return true;
         }
         else

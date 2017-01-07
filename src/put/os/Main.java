@@ -240,7 +240,7 @@ public class Main {
             "\t1 - Next command \n" +
             "\t2 - Run all commands \n" +
             "\t3 - Show registry \n" +
-            "\t4 - Stop process \n" +
+            "\t4 - Stop process and call scheduler \n" +
             "\t5 - Show this PCB data \n"
         );
 
