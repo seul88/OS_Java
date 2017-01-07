@@ -34,6 +34,9 @@ public class Main {
     private static Map<String, Integer> avaiablePrograms = new HashMap<String, Integer>();
 
     private static void initSystem() {
+
+        new ProcessManager();
+
         // Check and load available programs
         File[] programs = new File(".\\resources\\").listFiles();
 
@@ -97,6 +100,19 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void showRegisters() {
+        System.out.println("Registry of Processor");
+        System.out.print(
+                "\tA: " + Processor.A +
+                        "\tB: " + Processor.B +
+                        "\tC: " + Processor.C +
+                        "\tD: " + Processor.D +
+                        "\tE: " + Processor.E +
+                        "\tF: " + Processor.F
+        );
+        waitForEnter();
     }
 
     private static Scanner reader = new Scanner(System.in);
@@ -163,9 +179,10 @@ public class Main {
                 "\t1 - Create process \n" +
                 "\t2 - Run process \n" +
                 "\t3 - Show FCFS Queue \n" +
-                "\t4 - Stop process \n" +
+                "\t4 - TODO Stop process \n" +
                 "\t5 - Show tree of processes \n" +
-                "\t6 - [Back to Main Menu] \n"
+                "\t6 - Show registers \n" +
+                "\t7 - [Back to Main Menu] \n"
         );
 
         int choose = reader.nextInt();
@@ -221,13 +238,20 @@ public class Main {
             // Show processes
             case 5: {
                 System.out.println("[PCB TREE]");
-                System.out.print(ProcessManager.drawTree("ROOT"));
+                System.out.print(ProcessManager.drawTree("*ROOT"));
                 waitForEnter();
                 break;
             }
 
-            // Back to main menu
+            // Registry show
             case 6: {
+                showRegisters();
+                break;
+            }
+
+
+            // Back to main menu
+            case 7: {
                 mode = Mode.MAIN;
                 break;
             }
@@ -235,17 +259,18 @@ public class Main {
     }
 
     private static void interpreterMode() {
-        System.out.println("[Process in progress!]");
-        System.out.print(
-            "\t1 - Next command \n" +
-            "\t2 - Run all commands \n" +
-            "\t3 - Show registry \n" +
-            "\t4 - Stop process and call scheduler \n" +
-            "\t5 - Show this PCB data \n"
-        );
-
         ProcessBlockController activeProcess = ProcessManager.getRunning();
         Interpreter interpreter = new Interpreter(activeProcess);
+
+        System.out.println("[Process " + activeProcess.getName() + " in progress]");
+        System.out.print(
+                "\t1 - Next command \n" +
+                        "\t2 - Run all commands \n" +
+                        "\t3 - Show registry \n" +
+                        "\t4 - Stop process and call scheduler \n" +
+                        "\t5 - Show this PCB data \n"
+        );
+
 
         int choose = reader.nextInt();
 
@@ -254,27 +279,29 @@ public class Main {
             // Next command
             case 1:
             {
-                System.out.print(interpreter.nextLine());
+                if(!interpreter.nextLine()) {
+                    ProcessManager.finishProcess();
+                    System.out.println("Zakonczono proces!");
+                    mode = Mode.PROCESS;
+                    waitForEnter();
+                }
+
                 break;
             }
 
             // Run all
             case 2: {
                 interpreter.runAll();
+                ProcessManager.finishProcess();
+                System.out.println("Zakonczono proces!");
+                mode = Mode.PROCESS;
+                waitForEnter();
                 break;
             }
 
             // Registry show
             case 3: {
-                System.out.println("Registry of Processor");
-                System.out.print(
-                        "\tA: " + Processor.A +
-                        "\tB: " + Processor.B +
-                        "\tC: " + Processor.C +
-                        "\tD: " + Processor.D +
-                        "\tE: " + Processor.E +
-                        "\tF: " + Processor.F
-                );
+                showRegisters();
                 break;
             }
 

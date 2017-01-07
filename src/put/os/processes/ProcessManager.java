@@ -13,15 +13,21 @@ public class ProcessManager {
     private static ProcessBlockController root = new ProcessBlockController(0, "*ROOT");
     private static ProcessBlockController RUNNING = null;
 
-    public ProcessManager() {}
+    public ProcessManager() {
+        root.setSTATE(ProcessBlockController.States.GOTOWY);
+    }
 
     /**
      * Remove process
      * @param name Process Name
      */
-    public void removeProcess(String name){
+    public static void removeProcess(String name){
         ProcessBlockController pcb = find(name);
+        removeProcess(pcb);
+    }
 
+    private static void removeProcess(ProcessBlockController pcb)
+    {
         if (!pcb.getChildren().isEmpty())
             for (ProcessBlockController child : pcb.getChildren())
             {
@@ -100,7 +106,7 @@ public class ProcessManager {
 
 
     private static ProcessBlockController find(String name) {
-        if(name.equals("ROOT"))
+        if(name.equals("*ROOT"))
             return root;
 
         // wyszukiwanie procesu po nazwie
@@ -202,9 +208,34 @@ public class ProcessManager {
      */
     public static void stopRunning() {
         ProcessBlockController runningPCB = RUNNING;
+        Dispatcher.deletePCB(runningPCB);
+        RUNNING.sleep();
+    }
 
+    public static boolean stopProcess(String name) {
+        ProcessBlockController pcb = find(name);
 
-        //RUNNING.sleep();
+        if(pcb != null && pcb.getSTATE() == ProcessBlockController.States.GOTOWY)
+        {
+            Dispatcher.deletePCB(pcb);
+            pcb.sleep();
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean wakeup(String name) {
+        ProcessBlockController pcb = find(name);
+
+        if(pcb != null && pcb.getSTATE() == ProcessBlockController.States.OCZEKUJACY)
+        {
+            Dispatcher.addPCB(pcb);
+            pcb.wakeup();
+            return true;
+        }
+
+        return false;
     }
 
     public static boolean runProcess() {
@@ -220,5 +251,11 @@ public class ProcessManager {
         {
             return false;
         }
+    }
+
+    public static void finishProcess() {
+        RUNNING.setSTATE(ProcessBlockController.States.ZAKONCZONY);
+        removeProcess(RUNNING);
+        RUNNING = null;
     }
 }

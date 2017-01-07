@@ -120,7 +120,7 @@ public class ProcessBlockController {
         for(int i = 0; i<level; i++)
             result += '\t';
 
-        result += "-" + this.NAME + "[" + this.getSTATEName() + "]\n";
+        result += "-" + this.NAME + " [" + this.getSTATEName() + "]\n";
 
         for (ProcessBlockController pcb : this.children) {
             result += pcb.drawTree(level+1);
@@ -155,7 +155,7 @@ public class ProcessBlockController {
             case WYKONYWANY:
                 return "Wykonywany";
             case OCZEKUJACY:
-                return "Oczekujący";
+                return "Oczekujacy";
             case GOTOWY:
                 return "Gotowy";
             case ZAKONCZONY:
@@ -201,7 +201,7 @@ public class ProcessBlockController {
         desc.append("Name: ");
         desc.append(NAME);
 
-        desc.append("PID: ");
+        desc.append("\nPID: ");
         desc.append(PID);
 
         desc.append("\nState: ");
@@ -249,7 +249,7 @@ public class ProcessBlockController {
      *  Function recovers last step of executed program
      *  and change state for Ready
      */
-    public void revoke(){
+    public void wakeup(){
         Processor.A = this.A;
         Processor.B = this.B;
         Processor.C = this.C;

@@ -307,8 +307,6 @@ public class Interpreter {
 
         String command = tokens.get(0).toString();
 
-        System.out.println(command);
-
         // Check command
         if(!commands.containsKey(command))
         {
@@ -349,6 +347,12 @@ public class Interpreter {
         }
 
         // Clear tokens
+        System.out.print("\nWykonuje: ");
+        for(StringBuilder token : tokens)
+        {
+            System.out.print(token + " ");
+        }
+        System.out.print("\n");
         tokens.clear();
 
         return commands.get(command).execute(args);
