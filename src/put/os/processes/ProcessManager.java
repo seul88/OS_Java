@@ -79,10 +79,7 @@ public class ProcessManager {
         return false;
     }
 
-    /*
-        TODO VER1 (ERWIN)
-        Przerobic/przeciazyc na wyszukiwanie po nazwie
-    */
+
     public static void setState(ProcessBlockController.States STATE, ProcessBlockController pcb) {
         ProcessBlockController pc = find(root, pcb);
         pc.setSTATE(STATE);
