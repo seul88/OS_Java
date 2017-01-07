@@ -47,9 +47,12 @@ public class AllocateMemory
 		howManyBlocksIsNeaded = (int) Math.ceil((float)(fileContentInBytes.length) / HardDrive.blockSize);
 		if (howManyBlocksIsNeaded > 2)
 		{
-			howManyBlocksIsNeaded++;
+			isEnoughtSpace = CheckIfDriveHasEnoughFreeMemoryForFile(howManyBlocksIsNeaded + 1);	
 		}
-		isEnoughtSpace = CheckIfDriveHasEnoughFreeMemoryForFile(howManyBlocksIsNeaded);	
+		else			
+		{
+			isEnoughtSpace = CheckIfDriveHasEnoughFreeMemoryForFile(howManyBlocksIsNeaded);	
+		}
 		
 		if (isEnoughtSpace)
 		{
@@ -59,10 +62,15 @@ public class AllocateMemory
 			{
 				return memoryAllocateState.notEmptyINode;
 			}			
-			int numberOfIndexBlock = GetFirstFreeBlockNumber();
-			HardDrive.vector[numberOfIndexBlock] = true;
+			int numberOfIndexBlock = -1;
+			if (howManyBlocksIsNeaded > 2)
+			{
+				numberOfIndexBlock = GetFirstFreeBlockNumber();
+				HardDrive.vector[numberOfIndexBlock] = true;
+			}
+
 			List<Integer> listOfDataBlocks = new ArrayList<Integer>();
-			for (int i = 0; i < howManyBlocksIsNeaded - 1; i++)
+			for (int i = 0; i < howManyBlocksIsNeaded; i++)
 			{
 				int tempBlockIndex = GetFirstFreeBlockNumber();
 				HardDrive.vector[tempBlockIndex] = true;
@@ -98,7 +106,7 @@ public class AllocateMemory
 				}					
 			}
 
-			INode tempINode = new INode(tempINodeNumber, variable1, variable2, fileSize, howManyBlocksIsNeaded -1, numberOfIndexBlock);
+			INode tempINode = new INode(tempINodeNumber, variable1, variable2, fileSize, howManyBlocksIsNeaded, numberOfIndexBlock);
 			HardDrive.iNodeTable[tempINodeNumber] = tempINode;
 			HardDrive.catalog.add(new CatalogPosition(fileName, tempINodeNumber));
 			result = memoryAllocateState.successfulyAllocatedMemory;
@@ -131,7 +139,7 @@ public class AllocateMemory
 			INode iNodeOfFileToDelete = HardDrive.iNodeTable[position.GetIndexOfINode()];
 			if (iNodeOfFileToDelete.GetDirectBlock1() >= 0)
 			{
-				boolean clearBlockResult = ClearBlock(iNodeOfFileToDelete.GetDirectBlock2());
+				boolean clearBlockResult = ClearBlock(iNodeOfFileToDelete.GetDirectBlock1());
 				if (!clearBlockResult)
 				{
 					return memoryAllocateState.Error;
@@ -151,12 +159,15 @@ public class AllocateMemory
 				byte[] tempIndexBlock = ReadBlock(tempIndexBlockNumber);
 				for (int i = 0; i < tempIndexBlock.length; i++)
 				{
-					boolean clearBlockResult = ClearBlock(tempIndexBlock[i]);
-					if (!clearBlockResult)
+					if (tempIndexBlock[i] != -1)
 					{
-						return memoryAllocateState.Error;
+						boolean clearBlockResult = ClearBlock(tempIndexBlock[i]);
+						if (!clearBlockResult)
+						{
+							return memoryAllocateState.Error;
+						}
+						HardDrive.drive[(tempIndexBlockNumber * HardDrive.blockSize) + i] = -1;	
 					}
-					HardDrive.drive[(tempIndexBlockNumber * HardDrive.blockSize) + i] = -1;
 				}
 				
 				HardDrive.vector[iNodeOfFileToDelete.GetFileIndexBlock()] = false;

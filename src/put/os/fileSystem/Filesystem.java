@@ -18,7 +18,7 @@ public class Filesystem {
                     + "1: Show free space on disc\n"
                     + "2: Show files list\n"
                     + "3: Create new file\n"
-                    + "4: Add do file\n"
+                    + "4: Add content to file\n"
                     + "5: Detele file\n"
                     + "6: Show file\n"
                     + "7: Show disc content\n"
@@ -83,8 +83,7 @@ public class Filesystem {
                     {
                         System.out.println("1 - Show file content");
                         System.out.println("2 - Show file representation in blocks");
-                        System.out.println("Inny - Show file content");
-                        System.out.println("0 - Anuluj\n");
+                        System.out.println("0 - Cancel\n");
                         int operatorChoiceCase6 = reader.nextInt();
                         reader.nextLine();
                         switch(operatorChoiceCase6)
@@ -118,6 +117,11 @@ public class Filesystem {
                             {
                                 applicationStateSecondLevel = 0;
                                 break;
+                            }
+                            default :
+                            {
+                            	System.out.println("Unnown command\n");
+                            	break;
                             }
                         }
                     }
