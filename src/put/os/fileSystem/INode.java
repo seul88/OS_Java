@@ -6,8 +6,8 @@ public class INode
 	private int fileSize;
 	private int blockCounter;
 	//bloki bezpoœrednie
-	private byte value1;
-	private byte value2;
+	private byte directBlock1;
+	private byte directBlock2;
 	//blok poœredni 1 poziomu
 	int numberOfFirstLevelIndirectBlock;
 	
@@ -16,8 +16,8 @@ public class INode
 		indexInINodeTable = _indexInINodeTable;
 		fileSize = _fileSize;
 		blockCounter = _blockCounter;
-		value1 = _value1;
-		value2 = _value2;
+		directBlock1 = _value1;
+		directBlock2 = _value2;
 		numberOfFirstLevelIndirectBlock = _numberOfFirstLevelIndirectBlock;
 	}
 	
@@ -36,14 +36,14 @@ public class INode
 		return fileSize;
 	}
 	
-	public byte GetValue1()
+	public byte GetDirectBlock1()
 	{
-		return value1;
+		return directBlock1;
 	}
 	
-	public byte GetValue2()
+	public byte GetDirectBlock2()
 	{
-		return value2;
+		return directBlock2;
 	}
 
 	public int GetFileIndexBlock()
