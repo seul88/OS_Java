@@ -1,4 +1,4 @@
-package put.os.FCFS;
+/*package put.os.FCFS;
 
 import java.util.LinkedList;
 import put.os.processes.*;
@@ -68,4 +68,4 @@ public class FCFS {
                         fcfsProcQueue.addLast(fcfsProcQueue.pop());
                     }
    }
-}
+}*/
