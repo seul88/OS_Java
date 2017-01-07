@@ -8,6 +8,7 @@ import java.util.LinkedList;
  * Created by Damian on 06.01.2017.
  */
 public class Dispatcher {
+    public static ProcessBlockController NEXTTRY = null;
     private static LinkedList<ProcessBlockController> processesQueque = new LinkedList<ProcessBlockController>();
 
     public static void addPCB(ProcessBlockController pcb) {
@@ -19,7 +20,16 @@ public class Dispatcher {
     }
 
     public static ProcessBlockController pollHead () {
-        return Dispatcher.processesQueque.pollFirst();
+        ProcessBlockController RUNNING = Dispatcher.processesQueque.pollFirst();
+
+        try {
+            NEXTTRY = processesQueque.getFirst();
+        } catch (Exception e)
+        {
+            NEXTTRY = null;
+        }
+
+        return RUNNING;
     }
 
     public static String drawQueue() {

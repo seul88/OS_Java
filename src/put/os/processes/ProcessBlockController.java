@@ -25,6 +25,7 @@ public class ProcessBlockController {
     private int pointer;				// wskaźnik na znak czytany z dysku
     private int sizeOfProgram;			// rozmiar programu, porównywany z pointerem
 
+    // INTERRUPT_SAVE_AREA
     private int A, B, C, D, E, F;   // wartości w rejestrach procesora
 
     private ProcessBlockController parent;            // rodzic procesu
@@ -119,7 +120,7 @@ public class ProcessBlockController {
         for(int i = 0; i<level; i++)
             result += '\t';
 
-        result += "-" + this.NAME + "\n";
+        result += "-" + this.NAME + " [" + this.getSTATEName() + "]\n";
 
         for (ProcessBlockController pcb : this.children) {
             result += pcb.drawTree(level+1);
@@ -145,6 +146,23 @@ public class ProcessBlockController {
 
     public States getSTATE() {
         return this.STATE;
+    }
+
+    public String getSTATEName() {
+        switch(this.STATE) {
+            case NOWY:
+                return "Nowy";
+            case WYKONYWANY:
+                return "Wykonywany";
+            case OCZEKUJACY:
+                return "Oczekujacy";
+            case GOTOWY:
+                return "Gotowy";
+            case ZAKONCZONY:
+                return "Zakonczony";
+            default:
+                return "Unknown!";
+        }
     }
 
     public void setSTATE(States STATE) {
@@ -176,7 +194,6 @@ public class ProcessBlockController {
      * @return
      */
     public String toString() {
-
         StringBuilder desc = new StringBuilder();
 
         desc.append("===== PCB =====\n");
@@ -184,30 +201,11 @@ public class ProcessBlockController {
         desc.append("Name: ");
         desc.append(NAME);
 
-        desc.append("PID: ");
+        desc.append("\nPID: ");
         desc.append(PID);
 
         desc.append("\nState: ");
-        switch(this.STATE) {
-            case NOWY:
-                desc.append("Nowy");
-                break;
-            case WYKONYWANY:
-                desc.append("Wykonywany");
-                break;
-            case OCZEKUJACY:
-                desc.append("Oczekujący");
-                break;
-            case GOTOWY:
-                desc.append("Gotowy");
-                break;
-            case ZAKONCZONY:
-                desc.append("Zakonczony");
-                break;
-            default:
-                desc.append("Unknown!");
-                break;
-        }
+        desc.append(getSTATEName());
 
         desc.append("\n===============");
 
@@ -251,7 +249,7 @@ public class ProcessBlockController {
      *  Function recovers last step of executed program
      *  and change state for Ready
      */
-    public void revoke(){
+    public void wakeup(){
         Processor.A = this.A;
         Processor.B = this.B;
         Processor.C = this.C;

@@ -14,14 +14,16 @@ public class Filesystem {
         int applicationState = 1;
         do
         {
-            System.out.println("Wybierz co chcesz zrobiæ:\n"
-                    + "1: Wyswietl ilosc wolnego miejsca\n"
-                    + "2: Wyswietl liste plikow\n"
-                    + "3: Dodaj nowy plik\n"
-                    + "4: Dopisz do pliku\n"
-                    + "5: Usun plik\n"
-                    + "6: Wyswietl plik\n"
-                    + "0: koniec\n");
+            System.out.println("Choose action to perform : :\n"
+                    + "1: Show free space on disc\n"
+                    + "2: Show files list\n"
+                    + "3: Create new file\n"
+                    + "4: Add do file\n"
+                    + "5: Detele file\n"
+                    + "6: Show file\n"
+                    + "7: Show disc content\n"
+                    + "8: Show inode of file\n"
+                    + "0: Exit disc operation\n");
             int operatorChoice = reader.nextInt();
             reader.nextLine();
             switch(operatorChoice)
@@ -30,28 +32,26 @@ public class Filesystem {
                 {
                     int tempFreeBlocks = drive.GetFreeSpaceOnDriveInBlocks();
                     int tempBlockSize = drive.GetBlockSize();
-                    System.out.println("Na dysku pozostalo : "
+                    System.out.println("Free space on disc : "
                             + tempFreeBlocks
-                            + " wolnego miejsca na ktore skada sie : "
+                            + " divided in  : "
                             + tempFreeBlocks / tempBlockSize
-                            + " blokow.");
+                            + " blocks.");
                     break;
                 }
                 case 2:
                 {
-                    System.out.println("Lista plikow : \n");
+                    System.out.println("List of files on disk : \n");
                     System.out.println(drive.GetFilesListInString() + "\n");
                     break;
                 }
                 case 3:
                 {
-                    System.out.println("Podaj nazwe pliku : \n");
+                    System.out.println("Enter file name : \n");
                     String tempFileName = reader.nextLine();
-                    System.out.println("Podaj tresc pliku : \n");
+                    System.out.println("Enter content of file : \n");
                     String tempFileContent = reader.nextLine();
-
                     AllocateMemory.memoryAllocateState result = drive.CreateNewFile(tempFileName, tempFileContent);
-
                     System.out.println(result.toString());
                     break;
                 }
@@ -61,6 +61,19 @@ public class Filesystem {
                 }
                 case 5:
                 {
+                    System.out.println("Enter file name : \n");
+                    String tempFileName = reader.nextLine();
+                    boolean tempResult = drive.CheckIfFileExists(tempFileName);
+                    if (tempResult)
+                    {
+                    	 AllocateMemory.memoryAllocateState result = drive.DeleteFileFromMemory(tempFileName);
+                    	 System.out.println(result + "\n");
+                    }
+                    else
+                    {
+                        System.out.println("File not found\n");
+                    }
+
                     break;
                 }
                 case 6:
@@ -68,9 +81,9 @@ public class Filesystem {
                     int applicationStateSecondLevel = 1;
                     do
                     {
-                        System.out.println("1 - Wyswietl plik");
-                        System.out.println("2 - Wyswietl strukturê pliku");
-                        System.out.println("Inny - Wyswietl plik");
+                        System.out.println("1 - Show file content");
+                        System.out.println("2 - Show file representation in blocks");
+                        System.out.println("Inny - Show file content");
                         System.out.println("0 - Anuluj\n");
                         int operatorChoiceCase6 = reader.nextInt();
                         reader.nextLine();
@@ -78,7 +91,7 @@ public class Filesystem {
                         {
                             case 1:
                             {
-                                System.out.println("Podaj nazwe pliku : \n");
+                                System.out.println("Enter file name : \n");
                                 String tempFileName = reader.nextLine();
                                 boolean tempResult = drive.CheckIfFileExists(tempFileName);
                                 if (tempResult)
@@ -91,14 +104,14 @@ public class Filesystem {
                                 }
                                 else
                                 {
-                                    System.out.println("Nie ma takiego pliku\n");
+                                    System.out.println("File not found\n");
                                 }
 
                                 break;
                             }
                             case 2:
                             {
-                                System.out.println("Podaj nazwe pliku : \n");
+                                System.out.println("Enter file name : \n");
                                 break;
                             }
                             case 0:
@@ -111,6 +124,51 @@ public class Filesystem {
                     while(applicationStateSecondLevel == 1);
                     break;
                 }
+                case 7:
+                {
+                    int applicationStateSecondLevel = 1;
+                    do
+                    {
+                        System.out.println("1 - Disc content as numbers");
+                        System.out.println("2 - Disc content as chars");
+                        System.out.println("0 - Cancel\n");
+                        int operatorChoiceCase7 = reader.nextInt();
+                        reader.nextLine();
+                        switch(operatorChoiceCase7)
+                        {
+                            case 1:
+                            {
+                            	String result = HardDrive.PrintDiscContent(operatorChoiceCase7);
+                            	System.out.println(result);
+                            	System.out.println("\n");
+                                break;
+                            }
+                            case 2:
+                            {
+                            	String result = HardDrive.PrintDiscContent(operatorChoiceCase7);
+                            	System.out.println(result);
+                            	System.out.println("\n");
+                                break;
+                            }
+                            case 0:
+                            {
+                                applicationStateSecondLevel = 0;
+                                break;
+                            }
+                            default :
+                            {
+                            	System.out.println("Unnown command \n");
+                            	break;
+                            }
+                        }
+                    }
+                    while(applicationStateSecondLevel == 1);
+                    break;
+                }
+                case 8:
+                {
+                    break;
+                }
                 case 0:
                 {
                     applicationState = 0;
@@ -118,7 +176,7 @@ public class Filesystem {
                 }
                 default:
                 {
-                    System.out.println("Nie rozpoznano polecenia");
+                    System.out.println("Unnown command");
                     break;
                 }
             }

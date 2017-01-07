@@ -120,14 +120,17 @@ public class AllocateMemory
 		{
 			INode iNodeOfFileToDelete = HardDrive.iNodeTable[position.GetIndexOfINode()];
 			if (iNodeOfFileToDelete.GetBlockCounter() > 0)
-			{
+			{				
 				int tempIndexBlockNumber = iNodeOfFileToDelete.GetFileIndexBlock();
 				byte[] tempIndexBlock = ReadBlock(tempIndexBlockNumber);
 				for (int i = 0; i < tempIndexBlock.length; i++)
 				{
-					int byteAsInteger = tempIndexBlock[i];
-					HardDrive.drive[(byteAsInteger * HardDrive.blockSize) + i] = -1;;
-					HardDrive.vector[iNodeOfFileToDelete.GetFileIndexBlock()] = false;
+					boolean clearBlockResult = ClearBlock(tempIndexBlock[i]);
+					if (!clearBlockResult)
+					{
+						return memoryAllocateState.Error;
+					}
+					HardDrive.drive[(tempIndexBlockNumber * HardDrive.blockSize) + i] = -1;
 				}
 				
 				HardDrive.vector[iNodeOfFileToDelete.GetFileIndexBlock()] = false;
@@ -135,8 +138,21 @@ public class AllocateMemory
 			
 			HardDrive.iNodeTable[position.GetIndexOfINode()] = null;
 			HardDrive.catalog.remove(position);
+			result = memoryAllocateState.successfulyDeletedFile;
 		}
 		
+		return result;
+	}
+	
+	private static boolean ClearBlock(int blockNumber)
+	{
+		boolean result = false;
+		for (int i = 0; i < HardDrive.blockSize; i++)
+		{
+			HardDrive.drive[(blockNumber * HardDrive.blockSize) + i] = -1;
+		}	
+		HardDrive.vector[blockNumber] = false;
+		result = true;
 		return result;
 	}
 	
@@ -156,8 +172,8 @@ public class AllocateMemory
 			INode iNodeOfFileToRead = HardDrive.iNodeTable[position.GetIndexOfINode()];
 			if (iNodeOfFileToRead.GetBlockCounter() > 0)
 			{
-				fileInBytes[0] = iNodeOfFileToRead.GetValue1();
-				fileInBytes[1] = iNodeOfFileToRead.GetValue2();
+				fileInBytes[0] = iNodeOfFileToRead.GetDirectBlock1();
+				fileInBytes[1] = iNodeOfFileToRead.GetDirectBlock2();
 				int tempCounter = 2;
 				int tempIndexBlockNumber = iNodeOfFileToRead.GetFileIndexBlock();
 				byte[] tempIndexBlock = ReadBlock(tempIndexBlockNumber);
@@ -180,8 +196,8 @@ public class AllocateMemory
 			}
 			else				
 			{
-				fileInBytes[0] = iNodeOfFileToRead.GetValue1();
-				fileInBytes[1] = iNodeOfFileToRead.GetValue2();
+				fileInBytes[0] = iNodeOfFileToRead.GetDirectBlock1();
+				fileInBytes[1] = iNodeOfFileToRead.GetDirectBlock2();
 			}
 			result = new String(fileInBytes, Charset.forName("UTF-8"));
 		}

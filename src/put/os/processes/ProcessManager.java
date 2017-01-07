@@ -9,18 +9,25 @@ import java.util.List;
 public class ProcessManager {
 
     private static int counter = 1;
-    private static ProcessBlockController root = new ProcessBlockController(0, "ROOT");
+    // Procesy systemowe zaczynaja sie od gwiazdki
+    private static ProcessBlockController root = new ProcessBlockController(0, "*ROOT");
     private static ProcessBlockController RUNNING = null;
 
-    public ProcessManager() {}
+    public ProcessManager() {
+        root.setSTATE(ProcessBlockController.States.GOTOWY);
+    }
 
     /**
      * Remove process
      * @param name Process Name
      */
-    public void removeProcess(String name){
+    public static void removeProcess(String name){
         ProcessBlockController pcb = find(name);
+        removeProcess(pcb);
+    }
 
+    private static void removeProcess(ProcessBlockController pcb)
+    {
         if (!pcb.getChildren().isEmpty())
             for (ProcessBlockController child : pcb.getChildren())
             {
@@ -99,7 +106,7 @@ public class ProcessManager {
 
 
     private static ProcessBlockController find(String name) {
-        if(name.equals("ROOT"))
+        if(name.equals("*ROOT"))
             return root;
 
         // wyszukiwanie procesu po nazwie
@@ -173,6 +180,7 @@ public class ProcessManager {
         addProcess(process, parent);
 
         // III. Dodajemy gotowy proces do kolejki FCFS
+        process.setSTATE(ProcessBlockController.States.GOTOWY);
         Dispatcher.addPCB(process);
 
         return name;
@@ -183,7 +191,7 @@ public class ProcessManager {
     }
 
     public static String createProcess(Integer program) {
-        return createProcess("Process#" + counter, program, root);
+        return createProcess("USERPROG#" + counter, program, root);
     }
 
 
@@ -199,7 +207,35 @@ public class ProcessManager {
      *  Stop now running PCB
      */
     public static void stopRunning() {
-        //RUNNING.sleep();
+        ProcessBlockController runningPCB = RUNNING;
+        Dispatcher.deletePCB(runningPCB);
+        RUNNING.sleep();
+    }
+
+    public static boolean stopProcess(String name) {
+        ProcessBlockController pcb = find(name);
+
+        if(pcb != null && pcb.getSTATE() == ProcessBlockController.States.GOTOWY)
+        {
+            Dispatcher.deletePCB(pcb);
+            pcb.sleep();
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean wakeup(String name) {
+        ProcessBlockController pcb = find(name);
+
+        if(pcb != null && pcb.getSTATE() == ProcessBlockController.States.OCZEKUJACY)
+        {
+            Dispatcher.addPCB(pcb);
+            pcb.wakeup();
+            return true;
+        }
+
+        return false;
     }
 
     public static boolean runProcess() {
@@ -208,11 +244,18 @@ public class ProcessManager {
         if(pcb != null)
         {
             RUNNING = pcb;
+            pcb.setSTATE(ProcessBlockController.States.WYKONYWANY);
             return true;
         }
         else
         {
             return false;
         }
+    }
+
+    public static void finishProcess() {
+        RUNNING.setSTATE(ProcessBlockController.States.ZAKONCZONY);
+        removeProcess(RUNNING);
+        RUNNING = null;
     }
 }
