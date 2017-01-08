@@ -48,7 +48,7 @@ public class MemoryManagementUnit {
             String line = br.readLine();
 
             while (line != null) {
-                sb.append(line);
+                sb.append(line).append('\n');
                 line = br.readLine();
             }
             br.close();
@@ -168,6 +168,9 @@ public class MemoryManagementUnit {
     public static String printMemory (byte [] memory){
         StringBuilder sb= new StringBuilder();
         for (int i = 0; i < memory.length; i++) {
+            if(memory[i]=='\n'){
+                sb.append("\\n");
+            } else
             if(memory[i]!=0){
                 sb.append((char)memory[i]);
             } else {
