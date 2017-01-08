@@ -108,6 +108,11 @@ public class HardDrive 	// reprezentacja przestrzeni dyskowej
 		return AllocateMemory.ReadFile(_fileName);
 	}
 	
+	public AllocateMemory.memoryAllocateState AddContentToFile(String _fileName, String newContent)
+	{
+		return AllocateMemory.AddContentToFile(_fileName, newContent, GetInodeForFile(_fileName));
+	}
+	
 	public INode GetInodeForFile(String _fileName)
 	{
 		INode result = null;

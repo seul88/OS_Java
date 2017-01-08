@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jdk.nashorn.internal.runtime.NumberToString;
+import sun.net.TelnetProtocolException;
 
 public class AllocateMemory 
 {
@@ -33,11 +34,6 @@ public class AllocateMemory
 		memoryAllocateState result = memoryAllocateState.Error;
 		byte[] fileContentInBytes = fileContent.getBytes(Charset.forName("UTF-8"));
 		int fileSize = fileContentInBytes.length;
-		boolean indexBlockIsNeaded = false;
-		if (fileSize > 2)
-		{
-			indexBlockIsNeaded = true;
-		}
 		if (fileSize >  (HardDrive.blockSize * HardDrive.blockSize))
 		{
 			return memoryAllocateState.fileExceedsMaximumSize;
@@ -114,6 +110,107 @@ public class AllocateMemory
 		else
 		{
 			result = memoryAllocateState.notEnoughFreeMemory;
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Funkcja dopisuj¹ca do pliku nowe dane
+	 * @param _fileName - nazwa pliku do jakiego zostanie dopisana zawartoœæ
+	 * @param _newContent - zawartoœæ do dopisania do pliku
+	 * @return zwraca wynik dopisywania do pliku w postaci jednej z wartoœci enuma
+	 */
+	public static memoryAllocateState AddContentToFile(String _fileName, String _newContent, INode inode)
+	{
+		memoryAllocateState result = memoryAllocateState.Error;
+		if (inode == null)
+		{
+			return result;
+		}
+		String tempContent = ReadFile(_fileName) + _newContent; 
+		byte[] fileContentInBytes = tempContent.getBytes(Charset.forName("UTF-8"));
+		int fileSize = fileContentInBytes.length;
+		if (fileSize >  (HardDrive.blockSize * HardDrive.blockSize))
+		{
+			return memoryAllocateState.fileExceedsMaximumSize;
+		}
+		fileContentInBytes = _newContent.getBytes(Charset.forName("UTF-8"));
+		boolean isEnoughtSpace = false;
+		int howManyBlocksIsNeaded = 0;		
+		howManyBlocksIsNeaded = (int) Math.ceil((float)(fileContentInBytes.length - CalculateHowManyDataCanAddToExistingFileBlocks(inode)) / HardDrive.blockSize);
+		if (howManyBlocksIsNeaded == 0)
+		{
+			isEnoughtSpace = true;
+		}
+		else if (howManyBlocksIsNeaded > 1)
+		{
+			isEnoughtSpace = CheckIfDriveHasEnoughFreeMemoryForFile(howManyBlocksIsNeaded + 1);	
+		}
+		else			
+		{
+			isEnoughtSpace = CheckIfDriveHasEnoughFreeMemoryForFile(howManyBlocksIsNeaded);	
+		}
+		if (isEnoughtSpace)
+		{
+			
+		}
+		else
+		{
+			
+		}
+		
+		return result;
+	}
+	
+	private static int CalculateHowManyDataCanAddToExistingFileBlocks(INode inode)
+	{
+		int result = 0;
+		
+		if (inode.GetDirectBlock1() > 0)
+		{
+			byte[] tempBlock = ReadBlock(inode.GetDirectBlock1());
+			for(byte b : tempBlock)
+			{
+				if (b == -1)
+				{
+					result++;
+				}
+			}
+		}
+		
+		if (inode.GetDirectBlock2() > 0)
+		{
+			byte[] tempBlock = ReadBlock(inode.GetDirectBlock2());
+			for(byte b : tempBlock)
+			{
+				if (b == -1)
+				{
+					result++;
+				}
+			}
+		}
+		if (inode.GetFileIndexBlock() > 0)
+		{
+			byte[] tempIndexBlock = ReadBlock(inode.GetFileIndexBlock());
+			for(byte b : tempIndexBlock)
+			{
+				if (b == -1)
+				{
+					result = result + HardDrive.blockSize;
+				}
+				else
+				{
+					byte[] tempBlock = ReadBlock(b);
+					for(byte variable : tempBlock)
+					{
+						if (variable == -1)
+						{
+							result++;
+						}
+					}
+				}
+			}
 		}
 		
 		return result;

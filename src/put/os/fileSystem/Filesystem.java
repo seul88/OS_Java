@@ -49,14 +49,35 @@ public class Filesystem {
                 {
                     System.out.println("Enter file name : \n");
                     String tempFileName = reader.nextLine();
-                    System.out.println("Enter content of file : \n");
-                    String tempFileContent = reader.nextLine();
-                    AllocateMemory.memoryAllocateState result = drive.CreateNewFile(tempFileName, tempFileContent);
-                    System.out.println(result.toString());
-                    break;
+                    boolean tempResult = drive.CheckIfFileExists(tempFileName);
+                    if (!tempResult)
+                    {
+                    	System.out.println("Enter content of file : \n");
+                        String tempFileContent = reader.nextLine();
+                        AllocateMemory.memoryAllocateState result = drive.CreateNewFile(tempFileName, tempFileContent);
+                        System.out.println(result.toString());
+                        break;	
+                    }
+                    else                    	
+                    {
+                    	System.out.println("File already exists\n");
+                    }
                 }
                 case 4:
                 {
+                    System.out.println("Enter file name : \n");
+                    String tempFileName = reader.nextLine();
+                    boolean tempResult = drive.CheckIfFileExists(tempFileName);
+                    if (tempResult)
+                    {
+                    	System.out.println("Enter content of file : \n");
+                        String tempFileContent = reader.nextLine();
+                        
+                    }
+                    else                    	
+                    {
+                    	System.out.println("File not found\n");
+                    }
                     break;
                 }
                 case 5:
