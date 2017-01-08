@@ -288,8 +288,10 @@ public class ProcessBlockController {
 
         for(ProcessBlockController child : children)
         {
-            if(child.find(name) != null){
-                return child;
+            ProcessBlockController result = child.find(name);
+
+            if(result != null){
+                return result;
             }
         }
 
