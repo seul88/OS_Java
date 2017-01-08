@@ -207,6 +207,11 @@ public class ProcessBlockController {
         desc.append("\nState: ");
         desc.append(getSTATEName());
 
+        desc.append("\nRegistry PCB");
+        desc.append(
+                "\tA: " + A + "\tB: " + B + "\tC: " + C + "\tD: " + D + "\tE: " + E + "\tF: " + F
+        );
+
         desc.append("\n===============");
 
         return desc.toString();
@@ -257,5 +262,25 @@ public class ProcessBlockController {
         Processor.E = this.E;
         Processor.F = this.F;
         this.STATE = States.GOTOWY;
+    }
+
+    public void finish() {
+        this.STATE = States.ZAKONCZONY;
+
+        boolean doUnlock = false;
+        if(parent != null) {
+            for(ProcessBlockController siblings : parent.getChildren())
+            {
+                if(siblings.getSTATE() != States.GOTOWY && siblings.getSTATE() != States.OCZEKUJACY)
+                {
+                    doUnlock = true;
+                }
+            }
+        }
+
+        if(doUnlock)
+        {
+            ProcessManager.wakeupProcess(parent.getName());
+        }
     }
 }

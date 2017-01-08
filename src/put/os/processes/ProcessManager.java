@@ -26,6 +26,7 @@ public class ProcessManager {
         removeProcess(pcb);
     }
 
+    // Dzieci przenosi do roota
     private static void removeProcess(ProcessBlockController pcb)
     {
         if (!pcb.getChildren().isEmpty())
@@ -225,7 +226,7 @@ public class ProcessManager {
         return false;
     }
 
-    public static boolean wakeup(String name) {
+    public static boolean wakeupProcess(String name) {
         ProcessBlockController pcb = find(name);
 
         if(pcb != null && pcb.getSTATE() == ProcessBlockController.States.OCZEKUJACY)
@@ -254,7 +255,7 @@ public class ProcessManager {
     }
 
     public static void finishProcess() {
-        RUNNING.setSTATE(ProcessBlockController.States.ZAKONCZONY);
+        RUNNING.finish();
         removeProcess(RUNNING);
         RUNNING = null;
     }

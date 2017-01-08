@@ -1,5 +1,5 @@
 MOV A 6
 INC B
-INC A
+INC B
 DEC A
 MP A B

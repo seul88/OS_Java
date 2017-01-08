@@ -179,10 +179,11 @@ public class Main {
                 "\t1 - Create process \n" +
                 "\t2 - Run process \n" +
                 "\t3 - Show FCFS Queue \n" +
-                "\t4 - TODO Stop process \n" +
-                "\t5 - Show tree of processes \n" +
-                "\t6 - Show registers \n" +
-                "\t7 - [Back to Main Menu] \n"
+                "\t4 - Stop process \n" +
+                "\t5 - Wakeup process \n" +
+                "\t6 - Show tree of processes \n" +
+                "\t7 - Show registers \n" +
+                "\t8 - [Back to Main Menu] \n"
         );
 
         int choose = reader.nextInt();
@@ -235,8 +236,47 @@ public class Main {
                 break;
             }
 
-            // Show processes
+            // Stop process
+            case 4: {
+                System.out.println("[Stop process]");
+                System.out.println(ProcessManager.drawTree("*ROOT"));
+
+                System.out.print("Choose process: ");
+                String process = reader.next();
+
+                if(ProcessManager.stopProcess(process))
+                {
+                    System.out.println("Zatrzymano proces!");
+                }
+                else
+                {
+                    System.out.println("Nie udalo sie zatrzymac procesu.");
+                }
+
+                break;
+            }
+
+            // Wakeup process
             case 5: {
+                System.out.println("[Wakeup process]");
+                System.out.println(ProcessManager.drawTree("*ROOT"));
+
+                System.out.print("Choose process: ");
+                String process = reader.next();
+
+                if(ProcessManager.wakeupProcess(process))
+                {
+                    System.out.println("Wybudzono proces!");
+                }
+                else
+                {
+                    System.out.println("Nie udalo sie wybudzic procesu.");
+                }
+                break;
+            }
+
+            // Show processes
+            case 6: {
                 System.out.println("[PCB TREE]");
                 System.out.print(ProcessManager.drawTree("*ROOT"));
                 waitForEnter();
@@ -244,14 +284,14 @@ public class Main {
             }
 
             // Registry show
-            case 6: {
+            case 7: {
                 showRegisters();
                 break;
             }
 
 
             // Back to main menu
-            case 7: {
+            case 8: {
                 mode = Mode.MAIN;
                 break;
             }
