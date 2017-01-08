@@ -14,11 +14,11 @@ public class Filesystem {
         int applicationState = 1;
         do
         {
-            System.out.println("Choose action to perform : :\n"
+            System.out.println("Choose action to perform : \n"
                     + "1: Show free space on disc\n"
                     + "2: Show files list\n"
                     + "3: Create new file\n"
-                    + "4: Add do file\n"
+                    + "4: Add content to file\n"
                     + "5: Detele file\n"
                     + "6: Show file\n"
                     + "7: Show disc content\n"
@@ -33,9 +33,9 @@ public class Filesystem {
                     int tempFreeBlocks = drive.GetFreeSpaceOnDriveInBlocks();
                     int tempBlockSize = drive.GetBlockSize();
                     System.out.println("Free space on disc : "
+                            + tempFreeBlocks * tempBlockSize
+                            + " divided in : "
                             + tempFreeBlocks
-                            + " divided in  : "
-                            + tempFreeBlocks / tempBlockSize
                             + " blocks.");
                     break;
                 }
@@ -83,8 +83,7 @@ public class Filesystem {
                     {
                         System.out.println("1 - Show file content");
                         System.out.println("2 - Show file representation in blocks");
-                        System.out.println("Inny - Show file content");
-                        System.out.println("0 - Anuluj\n");
+                        System.out.println("0 - Cancel\n");
                         int operatorChoiceCase6 = reader.nextInt();
                         reader.nextLine();
                         switch(operatorChoiceCase6)
@@ -119,6 +118,11 @@ public class Filesystem {
                                 applicationStateSecondLevel = 0;
                                 break;
                             }
+                            default :
+                            {
+                            	System.out.println("Unnown command\n");
+                            	break;
+                            }
                         }
                     }
                     while(applicationStateSecondLevel == 1);
@@ -138,14 +142,14 @@ public class Filesystem {
                         {
                             case 1:
                             {
-                            	String result = HardDrive.PrintDiscContent(operatorChoiceCase7);
+                            	String result = drive.PrintDiscContent(operatorChoiceCase7);
                             	System.out.println(result);
                             	System.out.println("\n");
                                 break;
                             }
                             case 2:
                             {
-                            	String result = HardDrive.PrintDiscContent(operatorChoiceCase7);
+                            	String result = drive.PrintDiscContent(operatorChoiceCase7);
                             	System.out.println(result);
                             	System.out.println("\n");
                                 break;
@@ -167,6 +171,28 @@ public class Filesystem {
                 }
                 case 8:
                 {
+                    System.out.println("Enter file name : \n");
+                    String tempFileName = reader.nextLine();
+                    boolean tempResult = drive.CheckIfFileExists(tempFileName);
+                    if (tempResult)
+                    {
+                    	INode tempINode = drive.GetInodeForFile(tempFileName);                    	
+                    	if (tempINode != null)
+                    	{
+                    		System.out.println("Size of file : " + tempINode.GetFileSize() + "\n");
+                    		System.out.println("Number of blocks : " + tempINode.GetBlockCounter() + "\n");
+                    		System.out.println("Number of first data block : " + tempINode.GetDirectBlock1() + "\n");
+                    		System.out.println("Number of second data block : " + tempINode.GetDirectBlock2() + "\n");
+                    		if (tempINode.GetBlockCounter() > 2)
+                    		{
+                    			System.out.println("Number of index block : " + tempINode.GetFileIndexBlock() + "\n");                    			
+                    		}                    	                    		
+                    	}
+                    }
+                    else
+                    {
+                        System.out.println("File not found\n");
+                    }
                     break;
                 }
                 case 0:
