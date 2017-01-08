@@ -206,7 +206,7 @@ public class ProcessManager {
     public static boolean stopProcess(String name) {
         ProcessBlockController pcb = find(name);
 
-        if(pcb != null && pcb.getSTATE() == ProcessBlockController.States.GOTOWY)
+        if(pcb != null)
         {
             Dispatcher.deletePCB(pcb);
             pcb.sleep();
