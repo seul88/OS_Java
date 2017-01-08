@@ -146,7 +146,8 @@ public class Main {
         System.out.print(
                 "\t1 - Filesystem \n" +
                 "\t2 - Process management \n" +
-                "\t3 - Exit system \n"
+                "\t3 - Show Page Tables \n" +
+                "\t4 - Exit system \n"
         );
 
         int choose = reader.nextInt();
@@ -158,7 +159,12 @@ public class Main {
             case 2:
                 mode = Mode.PROCESS;
                 break;
-            case 3:
+            // Show Page Table
+            case 3: {
+                System.out.println(MemoryManagementUnit.printPageTables());
+                break;
+            }
+            case 4:
                 mode = Mode.EXIT;
                 break;
         }
@@ -288,7 +294,6 @@ public class Main {
                 showRegisters();
                 break;
             }
-
 
             // Back to main menu
             case 8: {

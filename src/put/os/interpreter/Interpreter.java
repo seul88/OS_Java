@@ -279,6 +279,17 @@ public class Interpreter {
             }
 
         });
+
+        // FORK
+        commands.put("FORK", new Command(0) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+                pcb.fork();
+                return true;
+            }
+
+        });
     }
 
     public boolean nextLine() {
@@ -295,7 +306,7 @@ public class Interpreter {
                 break;
             }
 
-            if(data != ' ' && data != '\n')
+            if(data != ' ' && data != '\n'&& data != '_')
             {
                 tokens.get(0).append(data);
             }

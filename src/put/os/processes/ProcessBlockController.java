@@ -1,5 +1,6 @@
 package put.os.processes;
 
+import javafx.scene.shape.ClosePathBuilder;
 import put.os.memory.MemoryManagementUnit;
 import virtual.device.Processor;
 
@@ -260,5 +261,43 @@ public class ProcessBlockController {
         {
             ProcessManager.wakeupProcess(parent.getName());
         }
+    }
+
+    public void fork() {
+        ProcessManager.createProcess(NAME+"FORK", numberOfProgram, this);
+        ProcessManager.stopProcess(NAME);
+
+        ProcessBlockController forkChild = ProcessManager.find(NAME+"FORK");
+
+        System.out.print(forkChild);
+
+        /*
+        forkChild.A = this.A;
+        forkChild.B = this.B;
+        forkChild.C = this.C;
+        forkChild.D = this.D;
+        forkChild.E = this.E;
+        forkChild.F = this.F;
+
+        forkChild.numberOfProgram = this.numberOfProgram;
+        forkChild.pointer = this.pointer;
+        forkChild.sizeOfProgram = this.sizeOfProgram;
+        */
+    }
+
+    public ProcessBlockController find(String name)
+    {
+        if(NAME == name)
+            return this;
+
+        for(ProcessBlockController child : children)
+        {
+            if(child.find(name) != null){
+                return child;
+            }
+        }
+
+
+        return null;
     }
 }

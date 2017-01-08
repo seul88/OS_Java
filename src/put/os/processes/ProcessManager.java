@@ -103,15 +103,8 @@ public class ProcessManager {
     */
 
 
-    private static ProcessBlockController find(String name) {
-        if(name.equals("*ROOT"))
-            return root;
-
-        // wyszukiwanie procesu po nazwie
-        for (ProcessBlockController child : root.getChildren())
-            if (child.getName().equals(name)) return child;
-
-        return null;
+    public static ProcessBlockController find(String name) {
+        return root.find(name);
     }
 
     private static ProcessBlockController find(ProcessBlockController keyNode) {

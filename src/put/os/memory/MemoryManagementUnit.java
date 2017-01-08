@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * Created by Damian on 09.12.2016.
  */
-public class MemoryManagementUnit { //TODO: Zrobic static
+public class MemoryManagementUnit {
     public static final int pageSize = 4;
     private static PageTable [] pageTables =  new PageTable[10];
     private static int pageTablesPointer =0;
