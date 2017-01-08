@@ -6,7 +6,9 @@ import put.os.memory.MemoryManagementUnit;
 import put.os.processes.ProcessBlockController;
 import put.os.processes.ProcessManager;
 import put.os.processorScheduling.Dispatcher;
+import virtual.device.MainMemory;
 import virtual.device.Processor;
+import virtual.device.SecondaryMemory;
 
 import java.io.File;
 import java.io.IOException;
@@ -313,7 +315,11 @@ public class Main {
                         "\t2 - Run all commands \n" +
                         "\t3 - Show registry \n" +
                         "\t4 - Stop process and call scheduler \n" +
-                        "\t5 - Show this PCB data \n"
+                        "\t5 - Show this PCB data \n" +
+                        "\t6 - Show main memory \n" +
+                        "\t7 - Show page tables \n" +
+                        "\t8 - Show disc memory \n" +
+                        "\t9 - Show LRU list \n"
         );
 
 
@@ -379,6 +385,29 @@ public class Main {
             // Show PCB
             case 5: {
                 System.out.println(activeProcess);
+                waitForEnter();
+            }
+
+            //Print Main Memory (RAM)
+            case 6: {
+                System.out.println(MemoryManagementUnit.printMemory(MainMemory.memory));
+                waitForEnter();
+            }
+
+            //Print page tables
+            case 7: {
+                System.out.println(MemoryManagementUnit.printPageTables());
+                waitForEnter();
+            }
+
+            //Print Secondary Memory (DISC)
+            case 8: {
+                System.out.println(MemoryManagementUnit.printMemory(SecondaryMemory.memory));
+                waitForEnter();
+            }
+            //Print LRU List
+            case 9: {
+                System.out.println(MemoryManagementUnit.printLRUList());
                 waitForEnter();
             }
         }
