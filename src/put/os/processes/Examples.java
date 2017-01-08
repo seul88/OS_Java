@@ -1,10 +1,12 @@
+/*
 package put.os.processes;
 
 public class Examples {
 
     public static void main(String[] args) {
 
-        /*
+        */
+/*
         ProcessManager manager = new ProcessManager();
 
 
@@ -48,7 +50,8 @@ public class Examples {
 
         ProcessBlockController p11 = new ProcessBlockController(manager.getCounter(),"Proces 10");
         manager.addProcessToRoot(p11);
-*/
+*//*
+
 
 
         // krotsze wywolanie metod
@@ -69,6 +72,7 @@ public class Examples {
         if(manager.find("PROCES X")) System.out.println("JUHU");
 
 
+*/
 /*
         System.out.println(p1.getPPID());
         System.out.println(p7.getPPID());
@@ -80,6 +84,8 @@ public class Examples {
         manager.removeChild(p6);
         manager.removeChild(p5);
         manager.removeChild(p4);
+*//*
+
 */
 /*
         System.out.println(manager.getCounter());
@@ -91,12 +97,14 @@ public class Examples {
       //  System.out.println(manager.getNumberOfChildren(p2));
         System.out.println(manager.getChildrenNames(p1));
       //  System.out.println(manager.getChildrenNames(p2));
-    /*    if(manager.find(p2, p8)) System.out.println("DA");
+    */
+/*    if(manager.find(p2, p8)) System.out.println("DA");
         p2.removeChild(p5);
         System.out.println(manager.getChildrenNames(p1));
-        p1.removeChild(p2);     */
+        p1.removeChild(p2);     *//*
+
         //System.out.println(manager.getChildrenNames(p1));
 
 
         }
-}
+}*/
