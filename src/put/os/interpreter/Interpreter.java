@@ -371,5 +371,4 @@ public class Interpreter {
     public void runAll() {
         while(nextLine()) {}
     }
-
 }
