@@ -325,8 +325,16 @@ public class Main {
             case 1:
             {
                 if(!interpreter.nextLine()) {
-                    ProcessManager.finishProcess();
-                    System.out.println("Zakonczono proces!");
+                    if(activeProcess.getSTATE() == ProcessBlockController.States.WYKONYWANY)
+                    {
+                        ProcessManager.finishProcess();
+                        System.out.println("Zakonczono proces!");
+                    }
+                    else
+                    {
+                        System.out.println("Proces zatrzymany!");
+                    }
+
                     mode = Mode.PROCESS;
                     waitForEnter();
                 }
@@ -337,8 +345,17 @@ public class Main {
             // Run all
             case 2: {
                 interpreter.runAll();
-                ProcessManager.finishProcess();
-                System.out.println("Zakonczono proces!");
+
+                if(activeProcess.getSTATE() == ProcessBlockController.States.WYKONYWANY)
+                {
+                    ProcessManager.finishProcess();
+                    System.out.println("Zakonczono proces!");
+                }
+                else
+                {
+                    System.out.println("Proces zatrzymany!");
+                }
+
                 mode = Mode.PROCESS;
                 waitForEnter();
                 break;

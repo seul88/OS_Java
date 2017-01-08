@@ -267,11 +267,8 @@ public class ProcessBlockController {
         ProcessManager.createProcess(NAME+"FORK", numberOfProgram, this);
         ProcessManager.stopProcess(NAME);
 
-        ProcessBlockController forkChild = ProcessManager.find(NAME+"FORK");
+        ProcessBlockController forkChild = find(NAME+"FORK");
 
-        System.out.print(forkChild);
-
-        /*
         forkChild.A = this.A;
         forkChild.B = this.B;
         forkChild.C = this.C;
@@ -282,12 +279,11 @@ public class ProcessBlockController {
         forkChild.numberOfProgram = this.numberOfProgram;
         forkChild.pointer = this.pointer;
         forkChild.sizeOfProgram = this.sizeOfProgram;
-        */
     }
 
     public ProcessBlockController find(String name)
     {
-        if(NAME == name)
+        if(NAME.equals(name))
             return this;
 
         for(ProcessBlockController child : children)
@@ -296,7 +292,6 @@ public class ProcessBlockController {
                 return child;
             }
         }
-
 
         return null;
     }

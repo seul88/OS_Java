@@ -286,14 +286,13 @@ public class Interpreter {
             @Override
             public boolean execute(Vector<String> arg) {
                 pcb.fork();
-                return true;
+                return false;
             }
 
         });
     }
 
     public boolean nextLine() {
-
         tokens.add(0, new StringBuilder());
 
         // Command
