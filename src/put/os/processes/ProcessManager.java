@@ -208,8 +208,8 @@ public class ProcessManager {
 
         if(pcb != null)
         {
-            Dispatcher.deletePCB(pcb);
             pcb.sleep();
+            Dispatcher.deletePCB(pcb);
             return true;
         }
 
@@ -221,8 +221,8 @@ public class ProcessManager {
 
         if(pcb != null && pcb.getSTATE() == ProcessBlockController.States.OCZEKUJACY)
         {
-            Dispatcher.addPCB(pcb);
             pcb.wakeup();
+            Dispatcher.addPCB(pcb);
             return true;
         }
 
