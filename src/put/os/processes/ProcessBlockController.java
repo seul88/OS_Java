@@ -249,7 +249,9 @@ public class ProcessBlockController {
 
     public void finish() {
         this.STATE = States.ZAKONCZONY;
-        this.ipc.finish();
+
+        if(this.role == 1)
+            this.ipc.finish();
 
         boolean doUnlock = false;
         if(parent != null) {
