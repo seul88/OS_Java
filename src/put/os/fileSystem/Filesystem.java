@@ -34,7 +34,7 @@ public class Filesystem {
                     int tempBlockSize = drive.GetBlockSize();
                     System.out.println("Free space on disc : "
                             + tempFreeBlocks * tempBlockSize
-                            + " divided in : "
+                            + " bytes divided in : "
                             + tempFreeBlocks
                             + " blocks.");
                     break;
@@ -72,7 +72,9 @@ public class Filesystem {
                     {
                     	System.out.println("Enter content of file : \n");
                         String tempFileContent = reader.nextLine();
-                        
+                        AllocateMemory.memoryAllocateState result = drive.AddContentToFile(tempFileName, tempFileContent);
+                        System.out.println(result.toString());
+                        break;                        
                     }
                     else                    	
                     {

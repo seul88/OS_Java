@@ -45,9 +45,24 @@ public class INode
 	{
 		return directBlock2;
 	}
+	
+	public void SetDirectBlock2(byte _directBlock2)
+	{
+		directBlock2 = _directBlock2;
+	}
 
 	public int GetFileIndexBlock()
 	{
 		return numberOfFirstLevelIndirectBlock;
+	}
+	
+	public void SetFileIndexBlock(int _numberOfFirstLevelIndirectBlock)
+	{
+		numberOfFirstLevelIndirectBlock = _numberOfFirstLevelIndirectBlock;
+	}
+	
+	public void ResizeFileSize(int sizeToAdd)
+	{
+		fileSize = fileSize + sizeToAdd;
 	}
 }

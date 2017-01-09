@@ -153,11 +153,130 @@ public class AllocateMemory
 		}
 		if (isEnoughtSpace)
 		{
-			
+			HardDrive.iNodeTable[inode.GetIndexInINodeTable()].ResizeFileSize(fileContentInBytes.length);
+			int tempCounter = 0;
+			if (inode.GetDirectBlock1() >= 0)
+			{
+				byte[] tempBlock = ReadBlock(inode.GetDirectBlock1());
+				for(int i = 0; i < tempBlock.length; i++)
+				{
+					if (tempBlock[i] == -1)
+					{
+						HardDrive.drive[(inode.GetDirectBlock1() * HardDrive.blockSize)+ i] = fileContentInBytes[tempCounter];
+						tempCounter++;
+						if (tempCounter >= fileContentInBytes.length)
+						{
+							return memoryAllocateState.successfulyChangedFileSize;
+						}
+					}
+				}
+			}
+			if (inode.GetDirectBlock2() >= 0)
+			{
+				byte[] tempBlock = ReadBlock(inode.GetDirectBlock2());
+				for(int i = 0; i < tempBlock.length; i++)
+				{
+					if (tempBlock[i] == -1)
+					{
+						HardDrive.drive[(inode.GetDirectBlock2() * HardDrive.blockSize)+ i] = fileContentInBytes[tempCounter];
+						tempCounter++;
+						if (tempCounter >= fileContentInBytes.length)
+						{
+							return memoryAllocateState.successfulyChangedFileSize;
+						}
+					}
+				}
+			}
+			else
+			{
+				int numberOfDirectBlock2 = GetFirstFreeBlockNumber();
+				HardDrive.vector[numberOfDirectBlock2] = true;
+				for (int i = 0; i < HardDrive.iNodeTable.length; i++)
+				{
+					if (HardDrive.iNodeTable[i].GetIndexInINodeTable() == inode.GetIndexInINodeTable())
+					{
+						HardDrive.iNodeTable[i].SetDirectBlock2((byte)numberOfDirectBlock2);
+						break;
+					}
+				}
+				for (int j = 0; j < HardDrive.blockSize; j++)
+				{
+					HardDrive.drive[(numberOfDirectBlock2 * HardDrive.blockSize) + j] = fileContentInBytes[tempCounter];
+					tempCounter++;
+					if (tempCounter >= fileContentInBytes.length)
+					{
+						return memoryAllocateState.successfulyChangedFileSize;
+					}
+				}				
+			}
+			int numberOfIndexBlock = -1;
+			if (inode.GetFileIndexBlock() == -1)
+			{
+				numberOfIndexBlock = GetFirstFreeBlockNumber();
+				HardDrive.vector[numberOfIndexBlock] = true;
+				for (int i = 0; i < HardDrive.iNodeTable.length; i++)
+				{
+					if (HardDrive.iNodeTable[i].GetIndexInINodeTable() == inode.GetIndexInINodeTable())
+					{
+						HardDrive.iNodeTable[i].SetFileIndexBlock(numberOfIndexBlock);
+						break;
+					}
+				}
+			}
+			else
+			{
+				numberOfIndexBlock = inode.GetFileIndexBlock();
+			}
+			if (numberOfIndexBlock == -1)
+			{
+				return memoryAllocateState.Error;
+			}
+			else
+			{
+				byte[] tempBlock = ReadBlock(numberOfIndexBlock);
+				for (int i = 0; i < tempBlock.length; i++)
+				{
+					if (tempBlock[i] == -1)
+					{
+						int tempBlockNumber = GetFirstFreeBlockNumber();
+						HardDrive.vector[tempBlockNumber] = true;
+						HardDrive.drive[(numberOfIndexBlock * HardDrive.blockSize) + i] =  (byte)tempBlockNumber;
+						for (int j = 0; j < HardDrive.blockSize; j++)
+						{
+							HardDrive.drive[(tempBlockNumber * HardDrive.blockSize) + j] = fileContentInBytes[tempCounter];
+							tempCounter++;
+							if (tempCounter >= fileContentInBytes.length)
+							{
+								return memoryAllocateState.successfulyChangedFileSize;
+							}
+						}
+					}
+					else
+					{
+						byte[] tempBlock2 = ReadBlock(tempBlock[i]);
+						for (int j = 0; j < tempBlock2.length; j++)
+						{
+							if (tempBlock2[j] == -1)
+							{								
+								HardDrive.drive[(tempBlock2[j] * HardDrive.blockSize) + j] = fileContentInBytes[tempCounter];																
+								tempCounter++;
+								if (tempCounter >= fileContentInBytes.length)
+								{
+									return memoryAllocateState.successfulyChangedFileSize;
+								}		
+							}
+							else
+							{
+								continue;
+							}
+						}
+					}
+				}
+			}
 		}
 		else
 		{
-			
+			result = memoryAllocateState.notEnoughFreeMemory;
 		}
 		
 		return result;
@@ -352,7 +471,7 @@ public class AllocateMemory
 			}
 			result = new String(fileInBytes, Charset.forName("UTF-8"));
 		}
-		return result;
+		return result.trim();
 	}
 	
 	private static CatalogPosition GetCatalogPositionObject(String _fileName)

@@ -22,6 +22,11 @@ public class CatalogPosition // pozycja katalogu
 		return indexOfINode;
 	}
 	
+	public void SetindexOfINode(int _indexOfINode)
+	{
+		this.indexOfINode = _indexOfINode;
+	}
+	
 	//public int GetBlockCount()
 	//{
 	//	return blockCount;
