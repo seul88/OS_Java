@@ -1,6 +1,7 @@
 package put.os.processes;
 
 import javafx.scene.shape.ClosePathBuilder;
+import put.os.ipc.Pipe;
 import put.os.memory.MemoryManagementUnit;
 import virtual.device.Processor;
 
@@ -25,6 +26,9 @@ public class ProcessBlockController {
     private int numberOfProgram;		// numer programu
     private int pointer;				// wskaźnik na znak czytany z dysku
     private int sizeOfProgram;			// rozmiar programu, porównywany z pointerem
+
+    private Pipe ipc;
+    private int role = 0; // 0-unknown, 1-parent, 2-child
 
     // INTERRUPT_SAVE_AREA
     private int A, B, C, D, E, F;   // wartości w rejestrach procesora
@@ -245,6 +249,7 @@ public class ProcessBlockController {
 
     public void finish() {
         this.STATE = States.ZAKONCZONY;
+        this.ipc.finish();
 
         boolean doUnlock = false;
         if(parent != null) {
@@ -264,6 +269,7 @@ public class ProcessBlockController {
     }
 
     public void fork() {
+        this.role = 1;
         ProcessManager.createProcess(NAME+"FORK", numberOfProgram, this);
         ProcessManager.stopProcess(NAME);
 
@@ -276,15 +282,32 @@ public class ProcessBlockController {
         forkChild.E = this.E;
         forkChild.F = this.F;
 
+        forkChild.ipc = new Pipe(this.ipc);
+        forkChild.role = 2;
+
         forkChild.numberOfProgram = this.numberOfProgram;
         forkChild.pointer = this.pointer;
         forkChild.sizeOfProgram = this.sizeOfProgram;
     }
 
+    public void pipe()
+    {
+        this.ipc = new Pipe();
+    }
+
+    public Pipe getIpc()
+    {
+        return this.ipc;
+    }
+
+    public int getRole() {
+        return this.role;
+    }
+
     public ProcessBlockController find(String name)
     {
         if(NAME.equals(name))
-            return this;
+        return this;
 
         for(ProcessBlockController child : children)
         {

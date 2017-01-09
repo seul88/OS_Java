@@ -35,6 +35,15 @@ public class Interpreter {
                         return Processor.E;
                     case "F":
                         return Processor.F;
+                    case "R":
+                    {
+                        try {
+                            System.out.print(pcb.getIpc().read());
+                            return getSource(pcb.getIpc().read());
+                        } catch (Exception e) {
+                            return 0;
+                        }
+                    }
                     default:
                         return 0;
                 }
@@ -45,6 +54,8 @@ public class Interpreter {
     private static Map<String, Command> commands = new HashMap<>();
 
     private Vector<StringBuilder> tokens;
+    private static boolean ignoreNextCmd = false;
+
 
     private ProcessBlockController pcb;
 
@@ -290,6 +301,101 @@ public class Interpreter {
             }
 
         });
+
+        // FORK
+        commands.put("PIPE", new Command(0) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+                pcb.pipe();
+                return true;
+            }
+
+        });
+
+        // IF
+        commands.put("IF", new Command(1) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+
+                switch(arg.get(0))
+                {
+                    case "P":
+                    {
+                        if(pcb.getRole() != 1)
+                        {
+                            ignoreNextCmd = true;
+                        }
+
+                        return true;
+                    }
+
+                    case "C":
+                    {
+                        if(pcb.getRole() != 2)
+                        {
+                            ignoreNextCmd = true;
+                        }
+
+                        return true;
+                    }
+                }
+
+
+                return false;
+            }
+
+        });
+
+        // IF
+        commands.put("CLOSE", new Command(1) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+
+                switch(arg.get(0))
+                {
+                    case "R":
+                    {
+                        pcb.getIpc().closeRead();
+
+                        return true;
+                    }
+
+                    case "W":
+                    {
+                        pcb.getIpc().closeWrite();
+
+                        return true;
+                    }
+                }
+
+
+                return false;
+            }
+
+        });
+
+        // WRITE
+        commands.put("WRITE", new Command(1) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+
+                StringBuffer data = new StringBuffer();
+                data.append( getSource(arg.get(0)) );
+
+                try {
+                    pcb.getIpc().write(data.toString());
+                } catch (Exception e) {
+                    return false;
+                }
+
+                return true;
+            }
+
+        });
     }
 
     public boolean nextLine() {
@@ -357,15 +463,25 @@ public class Interpreter {
         }
 
         // Clear tokens
-        System.out.print("\nWykonuje: ");
-        for(StringBuilder token : tokens)
-        {
-            System.out.print(token + " ");
+        if(!ignoreNextCmd) {
+            System.out.print("\nWykonuje: ");
+            for (StringBuilder token : tokens) {
+                System.out.print(token + " ");
+            }
+            System.out.print("\n");
         }
-        System.out.print("\n");
+
         tokens.clear();
 
-        return commands.get(command).execute(args);
+        if(ignoreNextCmd)
+        {
+            ignoreNextCmd = false;
+            return true;
+        }
+        else
+        {
+            return commands.get(command).execute(args);
+        }
     }
 
     public void runAll() {

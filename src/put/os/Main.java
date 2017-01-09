@@ -386,29 +386,34 @@ public class Main {
             case 5: {
                 System.out.println(activeProcess);
                 waitForEnter();
+                break;
             }
 
             //Print Main Memory (RAM)
             case 6: {
                 System.out.println(MemoryManagementUnit.printMemory(MainMemory.memory));
                 waitForEnter();
+                break;
             }
 
             //Print page tables
             case 7: {
                 System.out.println(MemoryManagementUnit.printPageTables());
                 waitForEnter();
+                break;
             }
 
             //Print Secondary Memory (DISC)
             case 8: {
                 System.out.println(MemoryManagementUnit.printMemory(SecondaryMemory.memory));
                 waitForEnter();
+                break;
             }
             //Print LRU List
             case 9: {
                 System.out.println(MemoryManagementUnit.printLRUList());
                 waitForEnter();
+                break;
             }
         }
     }

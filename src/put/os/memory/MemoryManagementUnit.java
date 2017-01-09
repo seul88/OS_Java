@@ -48,7 +48,7 @@ public class MemoryManagementUnit {
             String line = br.readLine();
 
             while (line != null) {
-                sb.append(line).append('\n');
+                sb.append(line);//.append('\n');
                 line = br.readLine();
             }
             br.close();
