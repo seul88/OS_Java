@@ -21,7 +21,7 @@ public class Pipe {
 
     public Pipe() {
         randomName = "PIPE"+(counter++);
-        drive.CreateNewFile(randomName, "2");
+        drive.CreateNewFile(randomName, "0");
     }
 
     public Pipe(Pipe pipeForLink)
@@ -38,7 +38,6 @@ public class Pipe {
         }
 
         drive.AddContentToFile(randomName, data);
-        System.out.println(drive.PrintFileFromMemory(randomName));
     }
 
     public String read() throws Exception {

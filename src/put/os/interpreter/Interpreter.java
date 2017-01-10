@@ -38,7 +38,6 @@ public class Interpreter {
                     case "R":
                     {
                         try {
-                            System.out.print(pcb.getIpc().read());
                             return getSource(pcb.getIpc().read());
                         } catch (Exception e) {
                             return 0;
