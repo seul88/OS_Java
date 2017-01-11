@@ -123,6 +123,10 @@ public class Filesystem {
                                     {
                                         System.out.println(tempFileContent + "\n");
                                     }
+                                    else
+                                    {
+                                    	System.out.println("Wyst¹pi³ b³¹d\n");
+                                    }
                                 }
                                 else
                                 {
@@ -134,6 +138,24 @@ public class Filesystem {
                             case 2:
                             {
                                 System.out.println("Enter file name : \n");
+                                String tempFileName = reader.nextLine();
+                                boolean tempResult = drive.CheckIfFileExists(tempFileName);
+                                if (tempResult)
+                                {
+                                    String tempFileContent = drive.PrintFileBlocks(tempFileName);
+                                    if (tempFileContent != null)
+                                    {
+                                        System.out.println(tempFileContent + "\n");
+                                    }
+                                    else
+                                    {
+                                    	System.out.println("Wyst¹pi³ b³¹d\n");
+                                    }
+                                }
+                                else
+                                {
+                                    System.out.println("File not found\n");
+                                }
                                 break;
                             }
                             case 0:
