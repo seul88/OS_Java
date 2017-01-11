@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Filesystem {
 
-    private static HardDrive drive = new HardDrive(100);
+    private static HardDrive drive = new HardDrive(104);
 
     public static void run() {
         Scanner reader = new Scanner(System.in);
