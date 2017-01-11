@@ -348,6 +348,22 @@ public class Interpreter {
         });
 
         // IF
+        commands.put("IFA", new Command(1) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+
+                if(Processor.A != getSource(arg.get(0)))
+                {
+                    ignoreNextCmd = true;
+                }
+
+                return true;
+            }
+
+        });
+
+        // CLOSE
         commands.put("CLOSE", new Command(1) {
 
             @Override
@@ -390,6 +406,19 @@ public class Interpreter {
                 } catch (Exception e) {
                     return false;
                 }
+
+                return true;
+            }
+
+        });
+
+        // JUMP
+        commands.put("JUMP", new Command(1) {
+
+            @Override
+            public boolean execute(Vector<String> arg) {
+
+                pcb.jump(getSource(arg.get(0)));
 
                 return true;
             }

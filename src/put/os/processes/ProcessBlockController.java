@@ -322,4 +322,8 @@ public class ProcessBlockController {
 
         return null;
     }
+
+    public void jump(int where) {
+        pointer = where;
+    }
 }
