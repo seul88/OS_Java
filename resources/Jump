@@ -1,6 +1,6 @@
 MOV A 5
 INC A
 MOV B 4
-IFA 6
+IFR A 6
 JUMP 7
 MOV C 1

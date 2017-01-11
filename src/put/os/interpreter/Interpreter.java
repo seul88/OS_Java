@@ -348,14 +348,60 @@ public class Interpreter {
         });
 
         // IF
-        commands.put("IFA", new Command(1) {
+        commands.put("IFR", new Command(2) {
 
             @Override
             public boolean execute(Vector<String> arg) {
 
-                if(Processor.A != getSource(arg.get(0)))
-                {
-                    ignoreNextCmd = true;
+                switch (arg.get(0)) {
+                    case "A": {
+                        if(Processor.A != getSource(arg.get(1)))
+                        {
+                            ignoreNextCmd = true;
+                        }
+
+                        break;
+                    }
+                    case "B": {
+                        if(Processor.B != getSource(arg.get(1)))
+                        {
+                            ignoreNextCmd = true;
+                        }
+
+                        break;
+                    }
+                    case "C": {
+                        if(Processor.C != getSource(arg.get(1)))
+                        {
+                            ignoreNextCmd = true;
+                        }
+
+                        break;
+                    }
+                    case "D": {
+                        if(Processor.D != getSource(arg.get(1)))
+                        {
+                            ignoreNextCmd = true;
+                        }
+
+                        break;
+                    }
+                    case "E": {
+                        if(Processor.E != getSource(arg.get(1)))
+                        {
+                            ignoreNextCmd = true;
+                        }
+
+                        break;
+                    }
+                    case "F": {
+                        if(Processor.F != getSource(arg.get(1)))
+                        {
+                            ignoreNextCmd = true;
+                        }
+
+                        break;
+                    }
                 }
 
                 return true;
