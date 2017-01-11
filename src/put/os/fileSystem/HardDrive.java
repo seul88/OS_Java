@@ -113,6 +113,66 @@ public class HardDrive 	// reprezentacja przestrzeni dyskowej
 		return AllocateMemory.AddContentToFile(_fileName, newContent, GetInodeForFile(_fileName));
 	}
 	
+	public String PrintFileBlocks(String _fileName)
+	{
+		String result = null;
+		
+		INode tempINode = GetInodeForFile(_fileName);
+		if (tempINode != null)
+		{
+			result = "";
+			int tempNumber = tempINode.GetDirectBlock1();			
+			result += tempNumber + " : ";
+			byte[] tempBlock = AllocateMemory.ReadBlock(tempNumber);
+			for (byte b : tempBlock)
+			{
+				result += "\t" + b;
+			}
+			result += "\n";
+			tempNumber = tempINode.GetDirectBlock2();
+			if (tempNumber != -1)
+			{
+				result += tempNumber + " : ";
+				byte[] tempBlock2 = AllocateMemory.ReadBlock(tempNumber);
+				for (byte b : tempBlock2)
+				{
+					result += "\t" + b;
+				}
+				result += "\n";
+			}
+			tempNumber = tempINode.GetFileIndexBlock();
+			if (tempNumber != -1)
+			{
+				byte[] tempBlock3 = AllocateMemory.ReadBlock(tempNumber);
+				result += tempNumber + " : ";
+				for (byte b : tempBlock3)
+				{
+					result += "\t" + b;					
+				}
+				result += "\n";
+				for (byte b : tempBlock3)
+				{
+					if (b != -1)
+					{
+						result += b + " : ";
+						byte[] tempBlock4 = AllocateMemory.ReadBlock(b);
+						for (byte c : tempBlock4)
+						{
+							result += "\t" + c;		
+						}
+						result += "\n";
+					}
+				}
+			}
+    		System.out.println("Size of file : " + tempINode.GetFileSize() + "\n");
+    		System.out.println("Number of blocks : " + tempINode.GetBlockCounter() + "\n");
+    		System.out.println("Number of first data block : " + tempINode.GetDirectBlock1() + "\n");
+    		System.out.println("Number of second data block : " + tempINode.GetDirectBlock2() + "\n");
+		}				
+		
+		return result;
+	}
+	
 	public INode GetInodeForFile(String _fileName)
 	{
 		INode result = null;
